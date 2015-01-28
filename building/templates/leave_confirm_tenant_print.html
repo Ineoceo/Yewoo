@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko" ng-app="yewooApp">
+<head>
+	<!-- start: Meta -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Yewoo Housing Management System</title>
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: CSS -->
+	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+	<link type="text/css" href="{{ STATIC_URL }}bootstrap/css/daterange.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}bootstrap/css/main.css" rel="stylesheet" media="screen">
+	<link href="{{ STATIC_URL }}bootstrap/fonts/font-awesome.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet">
+	<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}css/print.css" rel="stylesheet" media="print">
+	<!-- end: CSS -->
+
+    <!-- start: angular scripts -->
+    <script src="{{ STATIC_URL }}underscorejs/underscore-min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular.js"></script>
+    <!--<script src="{{ STATIC_URL }}angularjs/angular.min.js"></script>-->
+	<script src="{{ STATIC_URL }}js/leave_confirm_tenant_print.angular.js"></script>
+    <!-- end: angular scripts -->
+
+	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	[endif]-->
+
+	<!-- start: Favicon -->
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<!-- end: Favicon -->
+	
+	<style>
+    table {
+    	table-layout: fixed;
+    }
+    table th, table td {
+    	overflow: hidden;
+    }
+    .white {
+    	background-color: #ffffff;
+    }
+    .must {
+    	color: red;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .optional {
+    	color: black;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .margin0 {
+    	margin-left: 0px !important;
+    	margin-right: 0px !important;
+    	margin-top: 0px !important;
+		margin-bottom: 0px !important;
+	}
+	select {
+		font-family : 'Malgun Gothic' !important;
+	}
+    body {
+		font-family : 'Malgun Gothic' !important;
+	}
+	input {
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-webkit-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-ms-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-input {
+		margin-bottom:0px !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	#side-datepicker .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker2 .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker3 .ui-datepicker {
+		width:auto;
+	}
+
+    @page { size: A4 landscape; }
+
+	</style>
+</head>
+
+<body id="leave" style="background: white; padding: 5px;" ng-controller="MainCtrl" class="owner">
+    <!-- start:Header --!>
+    <!-- end:Header --!>
+	
+	{% load humanize %}	
+    <input type="hidden" id="print" value="{{ print }}" />
+    <input type="hidden" id="rid" value="{{ result.id }}" />
+    <input type="hidden" id="bid" value="{{ result.buildingName }}" />
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<!-- start: Content -->	
+            <img src="/lease/leave/down_tenant/{{result.id}}" border="0" onload="$('img').show(); $('#down').hide()" style="display:none;"/>
+            <div id="down">업로드된 파일이 없습니다.</div>
+			<!-- end: Content -->
+		</div>
+	</div>
+	
+
+
+
+	<!-- start: JavaScript-->
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/sparkline.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/tiny-scrollbar.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/moment.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/daterangepicker.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom-index.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/datepicker/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.datepicker-ko.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+	
+	<script src="{{ STATIC_URL }}ejs/ejs.js"></script>
+	<script src="{{ STATIC_URL }}ejs/ejs_production.js"></script>
+	<script src="{{ STATIC_URL }}ejs/view.js"></script>
+
+	<script src="{{ STATIC_URL }}js/common.js"></script>
+			
+	<script type="text/javascript" language="JavaScript">
+		$(document).ready(function(){
+			// show sidebar
+			$("#side-datepicker").datepicker();
+			$("#side-datepicker2").datepicker();
+			$("#side-datepicker3").datepicker();
+			$('.datepicker').datepicker();
+			$('.datepicker').click(function() {
+				$(this).datepicker();
+			});
+		
+			// radio 버튼 클릭 시
+			$('input[name=radioN]').change(function() {
+				changeRadio(Number($(this).val()));
+			});
+		});			
+	</script>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

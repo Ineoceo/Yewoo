@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<!-- start: Meta -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Yewoo Housing Management System</title>
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: CSS -->
+	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet" media="all">
+	<link type="text/css" href="{{ STATIC_URL }}bootstrap/css/daterange.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}bootstrap/css/main.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}bootstrap/fonts/font-awesome.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet" media="all">
+	<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet" media="all">
+	<!-- end: CSS -->
+
+	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	[endif]-->
+
+	<!-- start: Favicon -->
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<!-- end: Favicon -->
+	
+	<style>
+    table {
+		table-layout: fixed;
+		text-align : center;
+    }
+    table th, table td {
+		overflow: hidden;
+		text-align : center;
+	}
+    .must {
+    	color: red;
+    	float: left;
+		margin-right: 10px;
+    }
+    .optional {
+    	color: black;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .margin0 {
+    	margin-left: 0px !important;
+    	margin-right: 0px !important;
+    	margin-top: 0px !important;
+    	margin-bottom: 0px !important;
+	}
+	.width4 {
+		width: 95px;
+	}
+	.width3 {
+		width: 80px;
+	}
+	.width2 {
+		width: 70px;
+	}
+	select {
+		font-family : 'Malgun Gothic' !important;
+	}
+    body {
+		font-family : 'Malgun Gothic' !important;
+	}
+	input {
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-webkit-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-ms-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-input {
+		margin-bottom:0px !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	.fontmini {
+		text-align : center;
+		font-size : 0.9em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	.tooltip-inner {
+		text-align:left !important;
+		max-width:350px;
+	}
+	.myModal {
+		top : 10%;
+		bottom : 10%;
+		width : 70%;
+		margin : 0px 0px 0px 0px;
+		padding : 0px 0px 0px 0px;
+		left : 15%;
+		overflow-y : hidden;
+	}
+	.modal-dialog {
+		width : auto;
+		margin: 0px 0px 0px 0px;
+	}
+	.modal-body {
+		max-height : 100%;
+		overflow-y : auto;
+	}
+	#side-datepicker .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker2 .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker3 .ui-datepicker {
+		width:auto;
+	}
+	.modal.fade.ui-draggable-dragging {
+		-moz-transition:none;
+		-o-transition:none;
+		-webkit-transition:none;
+		transition:none;
+	}
+	.modal-backdrop {
+		background : none;
+	}
+	@page { size: landscape; }
+	</style>
+		
+</head>
+
+<body>
+    <!-- start:Header --!>
+    {% include "header.html" with menu="lease" %}
+    <!-- end:Header --!>
+	<div class="container-fluid" style="padding: 0px 20px 0px 20px; margin-top:10px; margin-bottom:40px">
+		<div class="col-md-2" style="padding-left:0px">
+          {% include "sidebar.html" with side_menu="department" %}
+        </div>
+			
+		<!-- start: Content -->	
+		<div id="content" class="col-md-10" style="padding-right:0px; font-size:1.1em">
+			<!-- breadcrumb -->
+			<div class="col-md-12" style="padding:0px; margin-bottom:10px">
+				<ol class="breadcrumb no-margin">
+					<li><a href="#">통합 내역 관리 시스템</a><!--<span class="divider">></span>--></li>
+					<li class="active">상세 고지 내역 확인</li>
+				</ol>
+			</div>
+				
+				{% load humanize %}
+				<!-- 탭 내용 및 상세 화면 -->
+				<div class="row-fluid">
+					<div class="panel panel-default col-md-12" style="margin:0px; padding:0px">
+						<div class="panel-body" style="padding:5px">
+							<ul class="nav nav-tabs" id="tabmenu">
+								<li class="active"><a href="#noticeDetailInput_tab">1. 상세 고지 내역 입력</a></li>
+								<li><a href="#noticeDetailCheck_tab">2. 고지 상세 내역 확인</a></li>
+							</ul>
+							<div id="mytabcontent" class="tab-content">
+								<!-- 1. 임대 내역 -->
+								<div class="tab-pane active" id="noticeDetailInput_tab">
+									<!-- 임대 및 고지 상세 현황 -->
+									<div class="row-fluid">
+										<div class="panel panel-default col-md-12" style="margin: 0px; padding: 0px">
+											<div class="panel-heading clearfix" style="padding:10px 0px 10px 10px">
+												<h3 class="panel-title" style=""><strong>임대 내역 정보</strong></h3>
+											</div>
+											<div class="panel-body table-responsive" style="margin:0px; padding:0px; border:0;">
+												<table class="table table-bordered table-condensed no-margin">
+													<colgroup>
+														<col width="4%">
+														<col width="4%">
+														<col width="4%">
+														<col width="4%">
+														<col width="9%">
+														<col width="9%">
+														<col width="6%">
+														<col width="10%">
+
+														<col width="3%">
+														<col width="13%">
+														<col width="3%">
+														<col width="10%">
+
+														<col width="7%">
+														<col width="7%">
+														<col width="7%">
+													</colgroup>
+													<tr style="background-color:#edf5fa">
+														<td colspan="8" style="text-align:left">
+															<div style="font-size:0.8em">건물명/호수</div>
+															<div><h4><font style="color:red">No.{{ building_id }} {{ building_name }} / {{ resident.buildingRoomNumber }}호</font></h4></div>
+														</td>
+														<td colspan="5" style="text-align:left">
+															<div style="font-size:0.8em">보증금/월세</div>
+															<div><h4><font style="color:red">{{ simpleLeaseDeposit | intcomma }}/{{ simpleLeaseMoney | intcomma }}만원</font></h4></div>
+														</td>
+														<td colspan="3" style="text-align:left">
+															<div style="font-size:0.8em">계약 평수</div>
+															<div><h4><font style="color:red"></font></h4></div>
+														</td>
+													</tr>
+													<tr>
+														<th colspan="2" style="text-align:center">입주자</th>
+														<th colspan="2" style="text-align:center">임대회차</th>
+														<th style="text-align:center">계약일</th>
+														<th style="text-align:center">만료일</th>
+														<th style="text-align:center">재실여부</th>
+														<th style="text-align:center">연락처</th>
+														<th colspan="2" style="text-align:center">보증금</th>
+														<th colspan="2" style="text-align:center">임대료</th>
+														<th style="text-align:center">관리비</th>
+														<th style="text-align:center">주차비</th>
+														<th style="text-align:center">부가세</th>
+													</tr>
+													<tr>
+														<td style="text-align:center">{{ resident.residentName }}</td>
+														<td style="text-align:center">{{ resident.residentGender }}</td>
+														<td style="text-align:center">{{ resident.leaseNumber }}회</td>
+														<td style="text-align:center">{{ resident.leaseContractPeriod }}개월</td>
+														<td style="text-align:center">{{ resident.inDate }}</td>
+														<td style="text-align:center">{{ resident.outDate }}</td>
+														<td style="text-align:center">-</td>
+														<td style="text-align:center">{{ resident.contractorContactNumber1 }}</td>
+														<td style="text-align:center">{{ resident.leaseType }}</td>
+														<td style="text-align:center">{{ resident.leaseDeposit | intcomma }}</td>
+														<td style="text-align:center">{{ resident.leasePayWay }}</td>
+														<td style="text-align:center">{{ resident.leaseMoney | intcomma }}</td>
+														<td style="text-align:center">{{ resident.maintenanceFee | intcomma }}</td>
+														<td style="text-align:center">{{ resident.parkingFee | intcomma }}</td>
+														<td style="text-align:center">{{ resident.surtax | intcomma }}</td>
+													</tr>
+												 </table>  
+											</div>
+										</div>
+										<!-- 고지 내역 입력 -->
+										<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+											<div class="panel-heading clearfix" style="padding:10px 0px 10px 10px">
+												<h3 class="panel-title" style=""><strong>고지 내역 입력</strong></h3>
+												<a style="margin-left:10px; float:left" href="#" title="<고지 내역 입력><br>이달에 고지해야 할 총 금액을 확인할 수 있습니다.<br><br>1. 고지 내역 입력 (상단)<br>1) {{ yymm }} {{ noticeNumber }}회차 (이번달 납부 회차 정보)<br>2) 합계 금액 (이번 달 고지 금액)<br>3) 미납 금액 (연체료가 포함된 최근 총 미납금액)<br>4) 총 납부 금액 (합계금액+미납금액)<br>으로 표시됩니다.<br><br>2. 고지 내역 입력 (하단)<br>이달에 고지해야 할 각 세부 항목과 금액을 확인할 수 있습니다.<br>'변동 금액' 버튼을 누르면 새 창에 '변동 금액' 입력 공간이 보여지고 금액에 대한 변동 사항을 입력할 수 있습니다." data-rel="tooltip" data-html="true" class="margin0"><i class="icon-question-sign"></i></a>
+											</div>
+											<div class="panel-body table-responsive" style="margin:0px; padding:0px; border:0;">
+												<table class="table table-bordered table-condensed no-margin">
+													<tr style="">
+														<td width="25%">
+															<div class="form-inline">
+																<input type="text" class="margin0 form-control input-sm" style="text-align:center; width:70px" value="{{ yymm }}" disabled />
+																<input type="text" class="margin0 form-control input-sm" style="text-align:center; width:70px" value="{{ noticeNumber }}회차" disabled />
+															</div>
+														</td>
+														<th width="10%" style="text-align:center; vertical-align:middle">해당 합계 금액</th>
+														<td width="14%"><input id="noticeFee" type="text" class="margin0 form-control input-sm" style="text-align:center" value="{{ list_last.totalFee | intcomma }} 원" disabled /></td>
+														<th width="10%" style="text-align:center; vertical-align:middle">+ 미납 금액</th>
+														<td width="14%"><input id="paymentFee" type="text" class="margin0 form-control input-sm" style="text-align:center" value="" disabled /></td>
+														<th width="12%" style="text-align:center; vertical-align:middle">= 총 납부 금액</th>
+														<td width="15%"><input id="finalFee" type="text" class="margin0 form-control input-sm" style="text-align:center; background-color:red; color:white" value="" disabled /></td>
+													</tr>
+												</table>
+												<table class="table table-bordered table-condensed no-margin">
+													<colgroup>
+														<col width="3%">
+														<col width="3%">
+														<col width="4%">
+
+														<col width="6%">
+														<col width="6%">
+														<col width="6%">
+														<col width="6%">
+														<col width="6%">
+														<col width="6%">
+														<col width="6%">
+														<col width="6%">
+														<col width="6%">
+														<col width="10%">
+
+														<col width="7%">
+														<col width="7%">
+														<col width="6%">
+														<col width="6%">
+													</colgroup>
+													<tr>
+														<th rowspan="2" style="text-align:center; vertical-align:middle">선택</th>
+														<th rowspan="2" colspan="2" style="text-align:center; vertical-align:middle">입력수정</th>
+														<th colspan="4" style="text-align:center; vertical-align:middle">임대료 및 관리비</th>
+														<th colspan="3" style="text-align:center; vertical-align:middle">공과금</th>
+														<th rowspan="2" style="text-align:center; vertical-align:middle">기타금액</th>
+														<th rowspan="2" style="text-align:center; vertical-align:middle">변동금액</th>
+														<th rowspan="2" style="text-align:center; vertical-align:middle">합계금액</th>
+														<th colspan="2" style="text-align:center; vertical-align:middle">고지처리사항<a href="#" title="고지 확인이 안 된 경우, 고지일 표시가 되지 않습니다." date-rel="tooltip" class="margin0"><i class="icon-question-sign"></i></a></th>
+														<th rowspan="2" style="text-align:center; vertical-align:middle">처리상태</th>
+														<th rowspan="2" style="text-align:center; vertical-align:middle">변동금액입력</th>
+													</tr>
+													<tr>
+														<th style="text-align:center; vertical-align:middle">임대료</th>
+														<th style="text-align:center; vertical-align:middle">관리비</th>
+														<th style="text-align:center; vertical-align:middle">부가세</th>
+														<th style="text-align:center; vertical-align:middle">주차비</th>
+														<th style="text-align:center; vertical-align:middle">전기</th>
+														<th style="text-align:center; vertical-align:middle">수도</th>
+														<th style="text-align:center; vertical-align:middle">가스</th>
+														<th style="text-align:center; vertical-align:middle">입력일</th>
+														<th style="text-align:center; vertical-align:middle">고지일</th>
+													</tr>
+													{% for e in list %}
+													<tr>
+														<td style="text-align:center; vertical-align:middle"><input type="checkbox" disabled /></td>
+														<td style="text-align:center; vertical-align:middle">수정</td>
+														<td style="text-align:center; vertical-align:middle">{{ e.modifyNumber }}회</td>
+														<td style="text-align:center; vertical-align:middle">{{ e.leaseMoney | intcomma }}</td>
+														<td style="text-align:center; vertical-align:middle">{{ e.maintenanceFee | intcomma }}</td>
+														<td style="text-align:center; vertical-align:middle">{{ e.surtax | intcomma }}</td>
+														<td style="text-align:center; vertical-align:middle">{{ e.parkingFee | intcomma }}</td>
+														<td style="text-align:center; vertical-align:middle">{{ e.electricityFee | intcomma }}</td>
+														<td style="text-align:center; vertical-align:middle">{{ e.waterFee | intcomma }}</td>
+														<td style="text-align:center; vertical-align:middle">{{ e.gasFee | intcomma }}</td>
+														<td style="text-align:center; vertical-align:middle">{{ e.etcFee | intcomma }}</td>
+														<td style="text-align:center; vertical-align:middle"><font style="color:red">{{ e.changedFee | intcomma }}</font></td>
+														<td style="text-align:center; vertical-align:middle">{{ e.totalFee | intcomma }}</td>
+														<td style="text-align:center; vertical-align:middle"><font style="color:blue">{{ e.inputDate }}</font></td>
+														<td style="text-align:center; vertical-align:middle"><font style="color:red">{{ e.noticeDate }}</font></td>
+														<td style="text-align:center; vertical-align:middle">{% if e.status == 1 %}처리{% else %}미처리{% endif %}</td>
+														<td style="text-align:center; vertical-align:middle"><button type="button" class="btn btn-xs btn-primary" onclick="showModifyForm();" {% if e.modifyNumber != maxModifyNumber %}disabled{% endif %}>입력</button></td>
+													</tr>
+													{% endfor %}
+												 </table>  
+											</div>
+										</div>
+										<!-- 미납 내역 확인 -->
+										<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+											<div id="payment_click" class="panel-heading clearfix" style="padding:10px 0px 10px 10px">
+												<h3 class="panel-title" style=""><strong>미납 내역 확인</strong></h3>
+												<div id="payment_mark" style="float:left; margin-left:5px"><i class="icon-chevron-up"></i></div>
+												<a style="float:left; margin-left:10px" href="#" title="<미납 내역 확인><br>1) 총 연체 기간 (연체 기간에 대한 정보)<br>2) 총 미납 회수 (총 미납된 회수 정보)<br>3) 총 미납 금액 (이번 달 납부 금액을 제외한 최근까지 총 미납 금액)<br>으로 표시됩니다." data-rel="tooltip" data-html="true" class="margin0"><i class="icon-question-sign"></i></a>
+											</div>
+											<div id="payment_content" class="panel-body table-responsive" style="margin:0px; padding:0px; border:0;">
+											</div>
+										</div>
+										<!-- 수정 처리 사유 보기 -->
+										<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+											<div class="panel-heading clearfix" style="padding:10px 0px 10px 10px">
+												<h3 class="panel-title" style=""><strong>수정 처리 사유 보기</strong></h3>
+												<a style="margin-left:10px; float:left" href="#" title="고지 내역 입력의 변동 금액 입력에서 입력한 수정 처리 사유를 확인할 수 있습니다." data-rel="tooltip" data-html="true" class="margin0"><i class="icon-question-sign"></i></a>
+											</div>
+											<div class="panel-body table-responsive" style="margin:0px; padding:0px; border:0;">
+												<table class="table table-bordered table-condensed no-margin" style="margin-bottom:0px">
+													<tr>
+														<th style="text-align:center" width="5%">NO.</th>
+														<th style="text-align:center" width="10%">년/월</th>
+														<th style="text-align:center" width="10%">항목</th>
+														<th style="text-align:center" width="65%">내용</th>
+														<th style="text-align:center" width="10%">시간</th>
+													</tr>
+													{% for e in list %}
+													{% if e.modifyNumber > 0 %}
+													<tr>
+														<td style="text-align:center">{{ e.modifyNumber }}</td>
+														<td style="text-align:center">{{ e.year }}.{{ e.month }}</td>
+														<td style="text-align:center">{{ e.modifyNumber }}</td>
+														<td style="text-align:center">{{ e.msg }}</td>
+														<td style="text-align:center">{{ e.changeDate }}</td>
+													</tr>
+													{% endif %}
+													{% endfor %}
+												</table>
+											</div>
+										</div>
+										<div class="row-fluid" style="text-align:center; margin-top:10px">
+											<button type="button" class="btn btn-sm btn-primary" onclick="historyBack();">목록으로 가기</button>
+										</div>
+									</div>
+								</div>
+
+								<!-- 2. 고지 상세 내역 확인 -->
+								<div class="tab-pane" id="noticeDetailCheck_tab">
+									<div class="row-fluid">
+										<div class="panel panel-default col-md-12" style="margin: 0px; padding: 0px">
+											<div class="panel-heading clearfix" style="padding:10px 0px 10px 10px">
+												<h3 class="panel-title" style=""><strong>임대 내역 정보</strong></h3>
+											</div>
+											<div class="panel-body table-responsive" style="margin:0px; padding:0px; border:0;">
+												<table class="table table-bordered table-condensed no-margin">
+													<colgroup>
+														<col width="4%">
+														<col width="4%">
+														<col width="4%">
+														<col width="4%">
+														<col width="9%">
+														<col width="9%">
+														<col width="6%">
+														<col width="10%">
+
+														<col width="3%">
+														<col width="13%">
+														<col width="3%">
+														<col width="10%">
+
+														<col width="7%">
+														<col width="7%">
+														<col width="7%">
+													</colgroup>
+													<tr style="background-color:#edf5fa">
+														<td colspan="8" style="text-align:left">
+															<div style="font-size:0.8em">건물명/호수</div>
+															<div><h4><font style="color:red">No.{{ building_id }} {{ building_name }} / {{ resident.buildingRoomNumber }}호</font></h4></div>
+														</td>
+														<td colspan="5" style="text-align:left">
+															<div style="font-size:0.8em">보증금/월세</div>
+															<div><h4><font style="color:red">{{ simpleLeaseDeposit | intcomma }}/{{ simpleLeaseMoney | intcomma }}만원</font></h4></div>
+														</td>
+														<td colspan="3" style="text-align:left">
+															<div style="font-size:0.8em">계약 평수</div>
+															<div><h4><font style="color:red"></font></h4></div>
+														</td>
+													</tr>
+													<tr>
+														<th colspan="2" style="text-align:center">입주자</th>
+														<th colspan="2" style="text-align:center">임대회차</th>
+														<th style="text-align:center">계약일</th>
+														<th style="text-align:center">만료일</th>
+														<th style="text-align:center">재실여부</th>
+														<th style="text-align:center">연락처</th>
+														<th colspan="2" style="text-align:center">보증금</th>
+														<th colspan="2" style="text-align:center">임대료</th>
+														<th style="text-align:center">관리비</th>
+														<th style="text-align:center">주차비</th>
+														<th style="text-align:center">부가세</th>
+													</tr>
+													<tr>
+														<td style="text-align:center">{{ resident.residentName }}</td>
+														<td style="text-align:center">{{ resident.residentGender }}</td>
+														<td style="text-align:center">{{ resident.leaseNumber }}회</td>
+														<td style="text-align:center">{{ resident.leaseContractPeriod }}개월</td>
+														<td style="text-align:center">{{ resident.inDate }}</td>
+														<td style="text-align:center">{{ resident.outDate }}</td>
+														<td style="text-align:center">-</td>
+														<td style="text-align:center">{{ resident.contractorContactNumber1 }}</td>
+														<td style="text-align:center">{{ resident.leaseType }}</td>
+														<td style="text-align:center">{{ resident.leaseDeposit | intcomma }}</td>
+														<td style="text-align:center">{{ resident.leasePayWay }}</td>
+														<td style="text-align:center">{{ resident.leaseMoney | intcomma }}</td>
+														<td style="text-align:center">{{ resident.maintenanceFee | intcomma }}</td>
+														<td style="text-align:center">{{ resident.parkingFee | intcomma }}</td>
+														<td style="text-align:center">{{ resident.surtax | intcomma }}</td>
+													</tr>
+												 </table>  
+											</div>
+										</div>
+										<!-- 전체 고지 내역-->
+										<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+											<div class="panel-heading clearfix" style="padding:5px 5px 5px 5px">
+												<h3 class="panel-title" style="padding-top:7px"><strong>전체 고지 내역</strong></h3>
+												<div class="form-inline" style="float:right">
+													<select id="leaseNumber_select" class="margin0 form-control input-sm" style="width:120px">
+													{% for elem in leaseNumberList %}
+														<option value="{{ elem }}" {% if elem == resident.leaseNumber %}selected{% endif %}>임대 {{ elem }}회차</option>
+													{% endfor %}
+													</select>
+													<button type="button" class="btn btn-sm btn-primary" onclick="getContentsTab2();">조회</button>
+													<button type="button" class="btn btn-sm btn-default" onclick="">초기화</button>
+												</div>
+											</div>
+											<div class="panel-subheading">
+												<strong>내역 현황</strong>
+												<label style="display:inline-block; font-size:0.95em"><input type="radio" name="radioN" value="0" checked />전체 내역</label>
+												<label style="display:inline-block; font-size:0.95em"><input type="radio" name="radioN" value="1" />선택 내역</label>
+												<label style="display:inline-block; font-size:0.95em"><input type="radio" name="radioN" value="2" />고지서(전체)</label>
+												<label style="display:inline-block; font-size:0.95em"><input type="radio" name="radioN" value="3" />고지서(선택)</label>
+												<div style="text-align:right; float:right">
+													<button type="button" class="btn btn-sm btn-primary" onclick="pagePrint();">출력</button>
+												</div>
+											</div>
+											<div id="content_bill" class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0;">
+											</div>
+										</div>
+									</div>
+									<div class="row-fluid" style="text-align:center; margin-top:10px">
+										<button type="button" class="btn btn-sm btn-primary" onclick="historyBack();">목록으로 가기</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- end: Content -->
+		</div>
+	</div>
+	
+
+
+	<input type="hidden" value="{{ csrf_token }}" />
+	<div class="modal fade dragModal myModal" id="changeFeeModal" aria-labelledby="myModalTitle" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">X</button>
+					<h4 class="modal-title" id="myModalTitle">변동 금액 입력</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="padding:0px">
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 3px; border:1">
+								<table class="table table-bordered table-condensed no-margin" style="margin-bottom:0px">
+									<tr>
+										<th rowspan="2" colspan="2" style="text-align:center; vertical-align:middle">입력수정</th>
+										<th colspan="4" style="text-align:center; vertical-align:middle">임대료 및 관리비</th>
+										<th colspan="3" style="text-align:center; vertical-align:middle">공과금</th>
+										<th rowspan="2" style="text-align:center; vertical-align:middle">기타금액</th>
+										<th rowspan="2" style="text-align:center; vertical-align:middle">변동금액</th>
+										<th rowspan="2" style="text-align:center; vertical-align:middle">합계금액</th>
+										<th rowspan="2" style="text-align:center; vertical-align:middle">고지내역입력일</th>
+									</tr>
+									<tr>
+										<th style="text-align:center; vertical-align:middle">임대료</th>
+										<th style="text-align:center; vertical-align:middle">관리비</th>
+										<th style="text-align:center; vertical-align:middle">부가세</th>
+										<th style="text-align:center; vertical-align:middle">주차비</th>
+										<th style="text-align:center; vertical-align:middle">전기</th>
+										<th style="text-align:center; vertical-align:middle">수도</th>
+										<th style="text-align:center; vertical-align:middle">가스</th>
+									</tr>
+									<tr>
+										<td style="text-align:center; vertical-align:middle">수정</td>
+										<td style="text-align:center; vertical-align:middle">{{ list_last.modifyNumber }}회</td>
+										<td style="text-align:center; vertical-align:middle"><div id="before0">{{ list_last.leaseMoney | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="before1">{{ list_last.maintenanceFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="before2">{{ list_last.surtax | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="before3">{{ list_last.parkingFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="before4">{{ list_last.electricityFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="before5">{{ list_last.waterFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="before6">{{ list_last.gasFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="before7">{{ list_last.etcFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"></td>
+										<td style="text-align:center; vertical-align:middle">{{ list_last.totalFee | intcomma }}</td>
+										<td rowspan="2" style="text-align:center; vertical-align:middle">
+											<input id="em_id" type="hidden" value="{{ list_last.eachMonth.id }}" />
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2" style="text-align:center; vertical-align:middle">입력 <i class="icon-play"></i></td>
+										<td><input id="c0" type="text" class="margin0 form-control input-sm fontmini" value="0" style="font-color:red" /></td>
+										<td><input id="c1" type="text" class="margin0 form-control input-sm fontmini" value="0" style="font-color:red" /></td>
+										<td><input id="c2" type="text" class="margin0 form-control input-sm fontmini" value="0" style="font-color:red" /></td>
+										<td><input id="c3" type="text" class="margin0 form-control input-sm fontmini" value="0" style="font-color:red" /></td>
+										<td><input id="c4" type="text" class="margin0 form-control input-sm fontmini" value="0" style="font-color:red" /></td>
+										<td><input id="c5" type="text" class="margin0 form-control input-sm fontmini" value="0" style="font-color:red" /></td>
+										<td><input id="c6" type="text" class="margin0 form-control input-sm fontmini" value="0" style="font-color:red" /></td>
+										<td><input id="c7" type="text" class="margin0 form-control input-sm fontmini" value="0" style="font-color:red" /></td>
+										<td style="text-align:center; vertical-align:middle"><font style="color:red"><div id="changeFee">0</div></font></td>
+										<td></td>
+									</tr>
+									<tr>
+										<td style="text-align:center; vertical-align:middle">수정</td>
+										<td style="text-align:center; vertical-align:middle"><div id="nextModifyNumber">{{ list_last.nextModifyNumber }}회</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="after0">{{ list_last.leaseMoney | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="after1">{{ list_last.maintenanceFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="after2">{{ list_last.surtax | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="after3">{{ list_last.parkingFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="after4">{{ list_last.electricityFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="after5">{{ list_last.waterFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="after6">{{ list_last.gasFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><div id="after7">{{ list_last.etcFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"></td>
+										<td style="text-align:center; vertical-align:middle"><div id="afterTotalFee">{{ list_last.totalFee | intcomma }}</div></td>
+										<td style="text-align:center; vertical-align:middle"><input id="modifyDate" type="text" class="margin0 datepicker form-control input-sm fontmini" /></td>
+									</tr>
+									<tr>
+										<td style="text-align:center; vertical-align:middle" colspan="3">수정 사유</td>
+										<td colspan="10"><input id="modifyMsg" type="text" class="margin0 form-control input-sm" placeholder="(예) 관리비 상승으로 10,000원 추가됨" /></td>
+									</tr>
+									<tr>
+										<td colspan="13" style="text-align:center">
+											<button type="button" class="btn btn-sm btn-primary" onclick="saveChangedInfo();">저  장</button>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 납부 내역 수정 리스트 팝업창 -->
+	<div class="modal fade dragModal myModal" id="paymentModifyModal" aria-labelledby="myModalTitle2" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">X</button>
+					<h4 class="modal-title" id="myModalTitle2">입력 내역 보기</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row-fluid">
+						<div id="payment_modify" class="" style="margin: 0px; padding: 0px; border:0;">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 미리보기 (미리보기 버튼 눌렀을 때 보이는 큰 팝업창) -->
+	<div class="modal fade dragModal myModal" id="inputHistoryModal" aria-labelledby="myModalTitl3" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">X</button>
+					<h4 class="modal-title" id="myModalTitle3">입력 내역 보기</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row-fluid">
+						<div id="content_modify" class="" style="margin: 0px; padding: 0px; border:0;">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+
+	<!-- start: JavaScript-->
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/sparkline.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/tiny-scrollbar.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/moment.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/daterangepicker.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom-index.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/datepicker/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.datepicker-ko.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+
+	<script src="{{ STATIC_URL }}ejs/ejs.js"></script>
+	<script src="{{ STATIC_URL }}ejs/ejs_production.js"></script>
+	<script src="{{ STATIC_URL }}ejs/view.js"></script>
+
+	<script src="{{ STATIC_URL }}js/03_02_notice_detail_input.js"></script>
+	<script src="{{ STATIC_URL }}js/common.js"></script>
+	
+	<script type="text/javascript" language="JavaScript">
+		$(document).ready(function(){
+			// tabmenu
+			$('#tabmenu a').click(function(e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+			// tab 자동이동
+			tabshow('{{ tab }}');
+
+			// show sidebar
+			$("#side-datepicker").datepicker();
+			$("#side-datepicker2").datepicker();
+			$("#side-datepicker3").datepicker();
+			$('.datepicker').datepicker();
+			$('.datepicker').click(function() {
+				$(this).datepicker();
+			});
+
+			/*
+			$('#modifyDate').change(function() {
+				var mdy = $(this).val().split('/');
+				if (Number(mdy[0]) < 10) mdy[0] = mdy[0].substr(1);
+				if (Number(mdy[1]) < 10) mdy[1] = mdy[1].substr(1);
+				$(this).val(mdy[2]+'.'+mdy[0]+'.'+mdy[1]);
+			});
+			*/
+			
+			roomnum = '{{ resident.buildingRoomNumber }}';
+			name = '{{ resident.contractorName }}';
+			leaseMoney = '{{ resident.leaseMoney }}';
+			leasePayDate = '{{ resident.leasePayDate }}';
+			
+			setCurInfo('{{ building_id }}', '{{ resident.id }}', roomnum);
+
+			// (tab1) ejs template 불러오기
+			getContents('{{ building_id }}', '{{ resident.id }}', roomnum, name, leaseMoney, leasePayDate);
+			// 납부내역 리스트 들고오기
+			getPaymentContents('{{ building_id }}', '{{ resident.id }}', '{{ year }}', '{{ month }}');
+			// tab2의 임대x회차 고지내역 불러오기
+			getContentsTab2('{{ building_id }}', '{{ resident.id }}'); 
+
+			// radio btn 클릭 시 동작
+			$('input[name=radioN]').change(function() {
+				changeRadio(Number($(this).val()));
+			});
+
+			// 미납 내역 확인 show/hide
+			var payment_flag = true;
+			$("#payment_click").click(function() {
+				payment_flag = !payment_flag;
+				if (payment_flag) {
+					$('#payment_content').show();
+					$('#payment_mark').html('<i class="icon-chevron-up"></i>');
+				}
+				else {
+					$('#payment_content').hide();
+					$('#payment_mark').html('<i class="icon-chevron-down"></i>');
+				}
+			});
+
+			// 팝업창을 움직일 수 있게 함
+			$('.dragModal').draggable({
+				handle : ".modal-content"
+			});
+		});			
+	</script>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

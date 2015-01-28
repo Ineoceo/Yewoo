@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<!-- start: Meta -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Yewoo Housing Management System</title>
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: CSS -->
+	<!--
+	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+	<link type="text/css" href="{{ STATIC_URL }}bootstrap/css/daterange.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}bootstrap/css/main.css" rel="stylesheet" media="screen">
+	<link href="{{ STATIC_URL }}bootstrap/fonts/font-awesome.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet">
+	<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet">
+	-->
+	{% include "common_css.html" %}
+	<!-- end: CSS -->
+
+	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	[endif]-->
+
+	<!-- start: Favicon -->
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<!-- end: Favicon -->
+	
+	<style>
+    table {
+    	table-layout: fixed;
+    }
+    table th, table td {
+    	overflow: hidden;
+    }
+    .must {
+    	color: red;
+    	float: left;
+		margin-right: 10px;
+    }
+    .optional {
+    	color: black;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .margin0 {
+    	margin-left: 0px !important;
+    	margin-right: 0px !important;
+    	margin-top: 0px !important;
+    	margin-bottom: 0px !important;
+	}
+	.width4 {
+		width: 95px;
+	}
+	.width3 {
+		width: 80px;
+	}
+	.width2 {
+		width: 70px;
+	}
+	select {
+		font-family : 'Malgun Gothic' !important;
+	}
+    body {
+		font-family : 'Malgun Gothic' !important;
+	}
+	input {
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-webkit-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-ms-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-input {
+		margin-bottom:0px !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	#myModal {
+		top : 10%;
+		bottom : 10%;
+		width : 70%;
+		margin : 0px 0px 0px 0px;
+		padding : 0px 0px 0px 0px;
+		left : 15%;
+	}
+	.modal.fade.ui-draggable-dragging {
+		-moz-transition:none;
+		-o-transition:none;
+		-webkit-transition:none;
+		transition:none;
+	}
+	.modal-backdrop {
+		background : none;
+	}
+	.modal-dialog {
+		width : auto;
+		margin: 0px 0px 0px 0px;
+	}
+	.modal-body {
+		max-height: 100%;
+		height: 80%;
+	}
+	#side-datepicker .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker2 .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker3 .ui-datepicker {
+		width:auto;
+	}
+	</style>
+		
+</head>
+
+<body>
+    <!-- start:Header --!>
+    {% include "header.html" with menu="resident" %}
+    <!-- end:Header --!>
+    <div class="container-fluid" style="padding: 0px 20px 0px 20px; margin-top:10px; margin-bottom:40px">
+		<div class="col-md-2" style="padding-left:0px">
+          {% include "sidebar.html" with side_menu="department" %}
+        </div>
+			
+		<!-- start: Content -->	
+		<div id="content" class="col-md-10" style="padding-right:0px; font-size:1.1em">
+
+			<div class="row-fluid" style="margin-bottom:0px">
+				<div class="panel panel-grey col-md-12" style="margin: 0px; padding: 0px">
+					<div class="panel-heading clearfix">
+						<h3 class="panel-title"><strong>입주자 관리 시스템</strong></h3>
+					</div>
+					<div class="panel-body" style="padding:0px">
+						<div class="btn-group" data-toggle="buttons">
+							<label class="btn btn-primary active">
+								<input type="checkbox" onclick="movePage('1');">입주자 정보 입력(개별)
+							</label>
+							<label class="btn btn-primary">
+								<input type="checkbox" onclick="movePage('2');">입주자 정보 입력(파일)
+							</label>
+							<label class="btn btn-primary">
+								<input type="checkbox" onclick="movePage('3');">입주자 정보 확인(목록)으로 돌아가기
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- breadcrumb -->
+			<div class="col-md-12" style="padding:0px; margin:10px 0px 10px 0px">
+				<ol class="breadcrumb no-margin">
+					<li><a href="#">입주자 관리</a><!--<span class="divider">></span>--></li>
+					<li class="active">입주자 정보 입력 (개별)</li>
+				</ol>
+			</div>
+			
+			<!-- start: Content -->	
+			<div id="content">
+				<div>
+					<div class="btn-group" style="margin:0px 0px 10px 0px">
+						<button type="button" class="btn btn-sm btn-default" onclick="setPreviewInfo();" data-toggle="modal" href="#myModal">미리보기</button>
+						<button type="button" class="btn btn-sm btn-info" onclick="movePage('1');">취소하기</button>
+						<button type="button" class="btn btn-sm btn-primary" onclick="SaveResidentInfo();">저장하기</button>
+					</div>
+				</div>
+				
+				<!-- start: table -->
+				<div class="row-fluid">
+					<div class="panel panel-default col-md-12" style="margin: 0px; padding: 0px">
+						<div class="panel-heading clearfix">
+							<h3 class="panel-title"><strong>1. 임대 정보 입력</strong></h3>
+						</div>
+						<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+							<table class="table table-bordered table-condensed no-margin">
+								<colgroup>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+								</colgroup>
+								<tbody>
+								  	<tr>
+										<td colspan="5">
+											<div class="must" style="margin-right:26px"><strong>건물명</strong></div>
+											<select id="buildingName" class="form-control input-sm margin0" style="width:150px">
+												<option value="">선택</option>
+												{% for b in building_name_id %}
+												<option value="b{{ b.id }}">{{ b.name }}</option>
+												{% endfor %}
+									  		</select>
+								  		</td>
+										<td colspan="4">
+											<div class="must" style="margin-right:20px"><strong>관리자</strong></div>
+											<input id="manager" class="form-control input-sm margin0" type="text" style="width:100px"/>
+										</td>
+										<td colspan="3">
+											<div class="must"><strong>호    실</strong></div>
+											<select id="buildingRoomNumber" class="form-control input-sm margin0" style="width:85px" disabled>
+												<option value="">선택</option>
+									  		</select>
+										</td>
+										<td colspan="4">
+											<div class="must" style="margin-right:20px"><strong>관리비</strong></div>
+											<input id="maintenanceFee" class="form-control input-sm margin0" type="text" style="width:100px" />
+										</td>
+										<td colspan="4">
+											<div class="must" style="margin-right:20px"><strong>부가세</strong></div>
+											<input id="surtax" class="form-control input-sm margin0" type="text" style="width:100px" />
+										</td>
+								  	</tr>
+									<tr>
+										<td colspan="4">
+											<div class="must"><strong>입주자</strong></div>
+											<input id="residentName" class="form-control input-sm margin0" type="text" style="width:100px" />
+										</td>
+										<td colspan="3">
+											<div class="must"><strong>입주회차</strong></div>
+											<select id="leaseNumber" class="form-control input-sm margin0" style="width:80px">
+												<option value="1">1회</option>
+												<option value="2">2회</option>
+												<option value="3">3회</option>
+												<option value="4">4회</option>
+												<option value="5">5회</option>
+												<option value="6">6회</option>
+												<option value="7">7회</option>
+												<option value="8">8회</option>
+												<option value="9">9회</option>
+												<option value="10">10회</option>
+											</select>
+										</td>
+										<td colspan="5">
+											<div class="must"><strong>입주기간</strong></div>
+											<select id="leaseContractPeriod" class="form-control input-sm margin0" style="width:100px">
+												<option value="1">1개월</option>
+												<option value="2">2개월</option>
+												<option value="3">3개월</option>
+												<option value="4">4개월</option>
+												<option value="5">5개월</option>
+												<option value="6">6개월</option>
+												<option value="7">7개월</option>
+												<option value="8">8개월</option>
+												<option value="9">9개월</option>
+												<option value="10">10개월</option>
+												<option value="11">11개월</option>
+												<option value="12">12개월</option>
+												<option value="13">13개월</option>
+												<option value="14">14개월</option>
+												<option value="15">15개월</option>
+												<option value="16">16개월</option>
+												<option value="17">17개월</option>
+												<option value="18">18개월</option>
+												<option value="19">19개월</option>
+												<option value="10">20개월</option>
+												<option value="21">21개월</option>
+												<option value="22">22개월</option>
+												<option value="23">23개월</option>
+												<option value="24">24개월</option>
+											</select>
+										</td>
+										<td colspan="8">
+											<div class="must" style="margin-right:26px"><strong>입주일</strong></div>
+											<input id="inDate" class="form-control form-horizontal input-sm margin0 datepicker dateinput fontmini col-md-4" type="text" placeholder="입주일" style="width:100px; margin-right:5px" />
+											<input id="outDate" class="form-control form-horizontal input-sm margin0 datepicker fontmini disabled col-md-4" type="text" placeholder="만료일" style="width:100px" disabled="" />
+										</td>
+									</tr>
+									<tr>
+								  		<td colspan="4"> 
+								  			<div class="must"><strong>임대 구분</strong></div>
+								  			<select id="leaseType" class="form-control input-sm margin0 width2">
+												<option value="월세">월세</option>
+												<option value="전세">전세</option>
+												<option value="매매">매매</option>
+											</select>
+								  		</td>
+								  		<td colspan="8">
+								  			<div class="must"><strong>보증금</strong></div>
+											<input id="leaseDeposit" type="text" class="form-control form-horizontal input-sm margin0 col-md-4" style="width:100px; margin-right:5px" />
+											<input id="leaseDeposit2" type="text" class="form-control form-horizontal input-sm margin0 col-md-4" style="font-size:0.80em; width:140px" disabled />
+								  		</td>
+								  		<td colspan="8">
+								  			<div class="must" style="margin-right:26px"><strong>임대료</strong></div>
+								  			<select id="leasePayWay" class="form-control form-horizontal input-sm margin0 width2 col-md-4">
+												<option value="선불">선불</option>
+												<option value="후불">후불</option>
+											</select>
+											<select id="leasePayDate" class="form-control form-horizontal input-sm margin0 width3 col-md-4">
+												{% for i in range %}                         
+  												<option value="{{ i }}">{{ i }}일</option>
+												{% endfor %}
+											</select>
+											<input id="leaseMoney" type="text" class="form-control form-horizontal input-sm margin0 col-md-4" style="width:127px" placeholder="임대료를 입력하세요." />
+								  		</td>
+								  	</tr>
+								  	<tr>
+										<td colspan="10">
+											<div class="must"><strong>입주 검침</strong></div>
+											<select id="checkType" class="form-control form-horizontal input-sm margin0 col-md-3" style="width:100px; font-size:0.8em">
+												<option value="0">일반</option>
+												<option value="1">원격검침1</option>
+												<option value="2">원격검침2</option>
+											</select>
+											<input id="checkE" type="text" class="form-control form-horizontal input-sm margin0 col-md-3" style="width:60px" placeholder="전기" />
+											<span id="checkStatus_0_2">
+												<input id="checkG" type="text" class="form-control form-horizontal input-sm margin0 col-md-3" style="width:55px" placeholder="가스" />
+												<input id="checkW" type="text" class="form-control form-horizontal input-sm margin0 col-md-3" style="width:65px" placeholder="상하수도" />
+											</span>
+											<span id="checkStatus_1" style="display:none">
+												<input id="checkHWG" type="text" class="form-control form-horizontal input-sm margin0 col-md-3" style="width:55px" placeholder="온수" />
+												<input id="checkHG" type="text" class="form-control form-horizontal input-sm margin0 col-md-3" style="width:55px" placeholder="난방" />
+												<input id="checkHWW" type="text" class="form-control form-horizontal input-sm margin0 col-md-3" style="width:55px" placeholder="온수" />
+												<input id="checkHW" type="text" class="form-control form-horizontal input-sm margin0 col-md-3" style="width:55px" placeholder="난방" />
+												<a href="#" title="전기, 온수(가스), 난방(가스), 온수(수도), 난방(수도)" data-rel="tooltip" class="margin0"><i class="icon-question-sign"></i></a>
+											</span>
+										</td>
+										<td colspan="4">
+											<input id="readDate" class="form-control input-sm margin0 col-md-12 datepicker dateinput" type="text" placeholder="검침 날짜" />
+										</td>
+										<td colspan="6">
+											<input id="readContent" class="form-control input-sm margin0 col-md-12" type="text" placeholder="검침 사항" />
+										</td>
+									</tr>
+									<tr>
+								  		<td colspan="20">
+											<div class="must" width="10%"><strong>중개 정보</strong></div>
+											<select id="agency" class="form-control form-horizontal input-sm col-md-4" style="width:100px">
+												<option value="공인중개">공인중개</option>
+												<option value="직거래">직거래</option>
+											</select>
+											<input id="agencyName" type="text" class="form-control form-horizontal input-sm margin0" style="width:300px"  placeholder="중개 정보를 입력하세요." />
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+											<div class="must"><strong>재실 정보</strong></div>
+										</td>
+										<td colspan="1">
+											<div class="must"><strong>입실</strong></div>
+										</td>
+										<td colspan="4">
+											<div class="form-inline">
+												<label class="radio">확인
+													<input type="radio" name="checkIn" id="checkInDateY" value="y" checked />
+												</label>
+												<label class="radio">미확인
+													<input type="radio" name="checkIn" id="checkInDateN" value="n" />
+												</label>
+											</div>
+										</td>
+										<td colspan="4">
+											<input id="realInDate" class="form-control input-smmargin0 datepicker dateinput" type="text" placeholder="입실일" />
+										</td>
+										<td colspan="1">
+											<div class="must"><strong>퇴실</strong></div>
+										</td>
+										<td colspan="4">
+											<div class="form-inline">
+												<label class="radio">확인
+													<input type="radio" name="checkOut" id="checkOutDateY" value="y" />
+												</label>
+												<label class="radio">미확인
+													<input type="radio" name="checkOut" id="checkOutDateN" value="n" checked />
+												</label>
+											</div>
+										</td>
+										<td colspan="4">
+											<input id="realOutDate" class="form-control input-smmargin0 datepicker dateinput" type="text" placeholder="퇴실일" disabled />
+										</td>
+									</tr>
+									<tr>
+										<td colspan="2">
+											<div class="optional">퇴실 사유</div>
+										</td>
+										<td colspan="18">
+											<input id="outReason" class="form-control input-smmargin0" type="text" placeholder="(예) 개인 사유로 퇴실함" disabled />
+										</td>
+									</tr>
+								</tbody>
+							 </table>  
+						</div>
+					</div>
+				</div>
+				
+				<div class="row-fluid">
+					<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+						<div class="panel-heading clearfix">
+							<h3 class="panel-title"><strong>2. 임대 계약자</strong></h3>
+						</div>
+						<div class="panel-body table-responsive" style="margin:0px; padding: 0px; border:0">
+							<table class="table table-bordered table-condensed no-margin">
+								<colgroup>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+								</colgroup>
+								<tbody>
+								  	<tr>
+								  		<td colspan="10">
+											<div class="must" style="margin-right:33px"><strong>성명</strong></div>
+											<div class="form-inline">
+												<input id="contractorName" class="form-control input-sm margin0" style="width:150px" type="text" placeholder="임대계약자 이름을 입력하세요." />
+												<select id="contractorGender" class="form-control input-sm margin0 width2" style="margin-right:10px; margin-bottom:0px">
+													<option value="남">남</option>
+													<option value="여">여</option>
+												</select>
+											</div>
+										</td>
+										<td colspan="10">
+											<div class="must"><strong>주민등록번호</strong></div>
+											<div class="form-inline">
+												<input id="contractorRegNumber_1" class="form-control input-sm margin0" type="text" style="width:80px" />
+												<span class="add-on">-</span>
+												<input id="contractorRegNumber_2" class="form-control input-sm margin0" type="text" style="width:80px" disabled />
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="10">
+											<div class="must"><strong>연락처 1</strong></div>
+											<div class="form-inline">
+												<input id="contractorContactNumber1_1" class="form-control input-sm margin0" type="text" style="width:60px" />
+												<span class="add-on">-</span>
+												<input id="contractorContactNumber1_2" class="form-control input-sm margin0" type="text" style="width:60px" />
+												<span class="add-on">-</span>
+												<input id="contractorContactNumber1_3" class="form-control input-sm margin0" type="text" style="width:60px" />
+											</div>
+										</td>
+										<td colspan="10">
+											<div class="optional" style="margin-right:38px"><strong>연락처 2</strong></div>
+											<div class="form-inline">
+												<input id="contractorContactNumber2_1" class="form-control input-sm margin0" type="text" style="width:60px" />
+												<span class="add-on">-</span>
+												<input id="contractorContactNumber2_2" class="form-control input-sm margin0" type="text" style="width:60px" />
+												<span class="add-on">-</span>
+												<input id="contractorContactNumber2_3" class="form-control input-sm margin0" type="text" style="width:60px" />
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="20">
+											<div class="must" style="margin-right:29px"><strong>주 소</strong></div>
+											<input id="contractorAddress" class="form-control input-sm margin0" type="text" style="width:690px"/>	
+										</td>
+									</tr>
+									<tr>
+										<td colspan="20">
+											<div class="optional"><strong>* 임대 계약자와 실 거주자가 같은 경우 체크해 주세요.</strong></div>
+											<input id="isContractorResidentSame" type="checkbox">	
+										</td>
+									</tr>								
+								</tbody>
+							 </table>  
+						</div>
+					</div>
+				</div>
+				
+				<div class="row-fluid">
+					<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+						<div class="panel-heading clearfix">
+							<h3 class="panel-title"><strong>3. 실 거주자</strong></h3>
+						</div>
+						<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+							<table class="table table-bordered table-condensed no-margin">
+								<colgroup>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+								</colgroup>
+								<tbody>
+								  	<tr>
+								  		<td colspan="10">
+											<div class="must" style="margin-right:65px"><strong>성명</strong></div>
+											<div class="form-inline">
+												<input id="realResidentName" class="form-control input-sm margin0" style="width:150px" type="text" placeholder="거주자 이름을 입력하세요." />
+												<select id="residentGender" class="form-control input-sm width2" style="margin-right:10px; margin-bottom:0px">
+													<option value="남">남</option>
+													<option value="여">여</option>
+												</select>
+											</div>
+										</td>
+										<td colspan="10">
+											<div class="must"><strong>주민등록번호</strong></div>
+											<div class="form-inline">
+												<input id="residentRegNumber_1" class="form-control input-sm margin0" type="text" style="width:80px"/>
+												<span class="add-on">-</span>
+												<input id="residentRegNumber_2" class="form-control input-sm margin0" type="text" style="width:80px" disabled />
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="5">
+											<div class="must"><strong>계약자와 관계</strong></div>
+											<input id="relToContractor" class="form-control input-sm margin0" type="text" style="width:80px" />
+										</td>
+										<td colspan="5">
+											<div class="must"><strong>실 거주자 수</strong></div>
+											<input id="residentPeopleNumber" class="form-control input-sm margin0" type="text" style="width:40px" />
+										</td>
+										<td colspan="10">
+											<div class="must" style="margin-right:60px"><strong>주소</strong></div>
+											<input id="residentAddress" class="form-control input-sm margin0" type="text" style="width:300px" />
+										</td>
+									</tr>
+									<tr>
+										<td colspan="10">
+											<div class="must" style="margin-right:42px"><strong>연락처 1</strong></div>
+											<div class="form-inline">
+												<input id="residentContactNumber1_1" class="form-control input-sm margin0" type="text" style="width:60px"/>
+												<span class="add-on">-</span>
+												<input id="residentContactNumber1_2" class="form-control input-sm margin0" type="text" style="width:60px"/>
+												<span class="add-on">-</span>
+												<input id="residentContactNumber1_3" class="form-control input-sm margin0" type="text" style="width:60px"/>
+											</div>
+										</td>
+										<td colspan="10">
+											<div class="optional" style="margin-right:37px"><strong>연락처 2</strong></div>
+											<div class="form-inline">
+												<input id="residentContactNumber2_1" class="form-control input-sm margin0" type="text" style="width:60px"/>
+												<span class="add-on">-</span>
+												<input id="residentContactNumber2_2" class="form-control input-sm margin0" type="text" style="width:60px"/>
+												<span class="add-on">-</span>
+												<input id="residentContactNumber2_3" class="form-control input-sm margin0" type="text" style="width:60px"/>
+											</div>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="10">
+											<div class="optional" style="margin-right:51px"><strong>직장명</strong></div>
+											<input id="residentOfficeName" class="form-control input-sm margin0" type="text" style="width:200px"/>
+										</td>
+										<td colspan="10">
+											<div class="optional" style="margin-right:55px"><strong>직 급</strong></div>
+											<input id="residentOfficeLevel" class="form-control input-sm margin0" type="text" style="width:200px"/>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="20">
+											<div class="optional" style="margin-right:37px"><strong>직장주소</strong></div>
+											<input id="residentOfficeAddress" class="form-control input-sm margin0" type="text" style="width:705px"/>
+										</td>
+									</tr>									
+									<tr>
+										<td colspan="10">
+											<div class="optional" style="margin-right:24px"><strong>직장연락처</strong></div>
+											<div class="form-inline">
+												<input id="residentOfficeContactNumber_1" class="form-control input-sm margin0" type="text" style="width:60px" />
+												<span class="add-on">-</span>
+												<input id="residentOfficeContactNumber_2" class="form-control input-sm margin0" type="text" style="width:60px" />
+												<span class="add-on">-</span>
+												<input id="residentOfficeContactNumber_3" class="form-control input-sm margin0" type="text" style="width:60px" />
+											</div>
+										</td>
+										<td colspan="10">
+											<div class="must" style="margin-right:47px"><strong>E-mail</strong></div>
+											<input id="residentEmail" class="form-control input-sm margin0" type="text" style="width:200px"/>
+										</td>
+									</tr>
+									<tr>
+										<td colspan="7">
+											<div class="must" style="margin-right:33px"><strong>주차 유무</strong></div>
+											<div class="form-inline">
+												<label class="radio">
+													유
+													<input type="radio" name="haveCar" id="haveCarY" value="y" checked="" />
+												</label>
+												<label class="radio">
+													무
+													<input type="radio" name="haveCar" id="haveCarN" value="n" />
+												</label>
+											</div>
+										</td>
+										<td colspan="7">
+											<div class="must"><strong>차량 번호</strong></div>
+											<input id="carNumber" class="form-control input-sm margin0" type="text" placeholder="예시) 13가 5801" style="width:120px" />
+										</td>
+										<td colspan="6">
+											<div class="must"><strong>주차 비용</strong></div>
+											<select id="parkingFee" class="form-control input-sm margin0" style="width:120px">
+		  										<option value="30000">&#8361; 30,000</option>
+		  										<option value="20000">&#8361; 20,000</option>
+		  										<option value="10000">&#8361; 10,000</option>
+		  									</select>
+	  									</td> 
+									</tr>					
+								</tbody>
+							 </table>  
+						</div>
+					</div>
+				</div>
+				
+				<div class="row-fluid">
+					<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+						<div class="panel-heading clearfix">
+							<h3 class="panel-title"><strong>4. 전달 유무</strong></h3>
+						</div>
+						<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+							<table class="table table-bordered table-condensed no-margin">
+								<colgroup>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+									<col width="5%"></col>
+								</colgroup>
+								<tbody>
+								  	<tr>
+								  		<td colspan="8">
+											<div class="must"><strong>중요사항 설명서</strong></div>
+											<div class="form-inline">
+												<label class="radio">
+													전달 유
+													<input type="radio" name="sendMsg" id="sendMsgY" value="y" checked="" />
+												</label>
+												<label class="radio">
+													전달 무
+													<input type="radio" name="sendMsg" id="sendMsgN" value="n" />
+												</label>
+											</div>
+										</td>
+										<td colspan="12">
+											<div class="must"><strong>품목체크리스트</strong></div>
+											<div class="form-inline">
+												<label class="radio">
+													입실확인
+													<input type="radio" name="itemCheckIn" id="checkinY" value="y" checked="" />
+												</label>
+												<label class="radio">
+													미확인
+													<input type="radio" name="itemCheckIn" id="checkinN" value="n" />
+												</label>
+												<label class="radio" style="margin-left:20px">
+													퇴실확인
+													<input type="radio" name="itemCheckOut" id="checkoutY" value="y" checked="" />
+												</label>
+												<label class="radio">
+													미확인
+													<input type="radio" name="itemCheckOut" id="checkoutN" value="n" />
+												</label>
+											</div>
+										</td>
+									</tr>			
+								</tbody>
+							 </table>  
+						</div>
+					</div>
+				</div>
+				
+				<div class="row-fluid">
+					<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+						<div class="panel-heading clearfix">
+							<h3 class="panel-title"><strong>5. 기타</strong></h3>
+						</div>
+						<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+							<table class="table table-bordered table-condensed no-margin">
+								<colgroup>
+									<col width="100%"></col>
+								</colgroup>
+								<tbody>
+								  	<tr>
+								  		<td>
+								  			<input id="memo" class="form-control input-sm margin0" type="text" />
+										</td>
+									</tr>			
+								</tbody>
+							 </table>  
+						</div>
+					</div>
+				</div>
+				
+				<div>
+					<div class="btn-group" style="margin:10px 0px 20px 0px">
+						<button type="button" class="btn btn-sm btn-default" onclick="setPreviewInfo();" data-toggle="modal" href="#myModal">미리보기</button>
+						<button type="button" class="btn btn-sm btn-info" onclick="movePage('1');">취소하기</button>
+						<button type="button" class="btn btn-sm btn-primary" onclick="SaveResidentInfo();">저장하기</button>
+					</div>
+				</div>
+				<!-- end: table -->
+			</div>
+			<!-- end: Content -->
+		</div>
+	</div>
+	
+	
+	<!-- 미리보기 -->
+	<div class="modal fade dragModal" id="myModal" aria-labelledby="myModalTitle" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">X</button>
+					<h4 class="modal-title" id="myModalTitle">입력 정보 미리보기</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin:0px; padding: 0px">
+							<div class="panel-heading clearfix">
+								<h3 class="panel-title"><strong>1. 임대 정보 입력</strong></h3>
+							</div>
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border: 0">
+								<table class="table table-bordered table-condensed no-margin">
+									<colgroup>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+									</colgroup>
+									<tbody>
+											<tr>
+												<td colspan="5">
+													<div class="must" style="margin-right:26px"><strong>건물명</strong></div>
+													<div id="buildingName_modal" class="margin0"></div>
+												</td>
+												<td colspan="4">
+													<div class="must" style="margin-right:20px"><strong>관리자</strong></div>
+													<div id="manager_modal" class="margin0"></div>
+												</td>
+												<td colspan="3">
+													<div class="must"><strong>호    실</strong></div>
+													<div id="buildingRoomNumber_modal" class="margin0"></div>
+												</td>
+												<td colspan="4">
+													<div class="must" style="margin-right:20px"><strong>관리비</strong></div>
+													<div id="maintenanceFee_modal" class="margin0"></div>
+												</td>
+												<td colspan="4">
+													<div class="must" style="margin-right:20px"><strong>부가세</strong></div>
+													<div id="surtax_modal" class="margin0"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="4">
+													<div class="must"><strong>입주자</strong></div>
+													<div id="residentName_modal" class="margin0"></div>
+												</td>
+												<td colspan="3">
+													<div class="must"><strong>입주회차</strong></div>
+													<div id="leaseNumber_modal" class="margin0">
+												</td>
+												<td colspan="5">
+													<div class="must"><strong>입주기간</strong></div>
+													<div id="leaseContractPeriod_modal" class="margin0"></div>
+												</td>
+												<td colspan="8">
+													<div class="must" style="margin-right:26px"><strong>입주일</strong></div>
+													<div id="inOutDate_modal" class="margin0"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="4"> 
+													<div class="must"><strong>임대 구분</strong></div>
+													<div id="leaseType_modal" class="margin0"></div>
+												</td>
+												<td colspan="8">
+													<div class="must"><strong>보증금</strong></div>
+													<div id="leaseDeposit_modal" class="margin0"></div>
+												</td>
+												<td colspan="8">
+													<div class="must" style="margin-right:26px"><strong>임대료</strong></div>
+													<div id="leasePay_modal" class="margin0"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="10">
+													<div class="must"><strong>입주 검침</strong></div>
+													<div id="checkType_modal" class="margin0" style="float:left; margin-right:10px"></div>
+													<div id="checkEHWHW_modal" class="margin0" style="float:left; margin-left:10px"></div>
+													<div id="checkEGW_modal" class="margin0" style="float:left"></div>
+												</td>
+												<td colspan="4">
+													<div id="readDate_modal" class="margin0"></div>
+												</td>
+												<td colspan="6">
+													<div id="readContent_modal" class="margin0"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="20">
+													<div class="must" width="10%"><strong>중개 정보</strong></div>
+													<div id="agency_modal" class="margin0"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2">
+													<div class="must">재실 정보</div>
+												</td>
+												<td colspan="2">
+													<div class="must">입실</div>
+												</td>
+												<td colspan="3">
+													<div id="checkIn_modal"></div>
+												</td>
+												<td colspan="4">
+													<div id="realInDate_modal" class="margin0"></div>
+												</td>
+												<td colspan="2">
+													<div class="must">퇴실</div>
+												</td>
+												<td colspan="3">
+													<div id="checkOut_modal"></div>
+												</td>
+												<td colspan="4">
+													<div id="realOutDate_modal" class="margin0"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2">
+													<div class="optional">퇴실 사유</div>
+												</td>
+												<td colspan="18">
+													<div id="outReason_modal" class="margin0"></div>
+												</td>
+											</tr>
+									</tbody>
+								 </table>  
+							</div>
+						</div>
+					</div>
+					
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+							<div class="panel-heading clearfix">
+								<h3 class="panel-title"><strong>2. 임대 계약자</strong></h3>
+							</div>
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+								<table class="table table-bordered table-condensed no-margin">
+									<colgroup>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+									</colgroup>
+									<tbody>
+										<tr>
+											<td colspan="10">
+												<div class="must" style="margin-right:33px"><strong>성명</strong></div>
+												<div id="contractorNameGender_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="must"><strong>주민등록번호</strong></div>
+												<div id="contractorRegNumber_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="10">
+												<div class="must"><strong>연락처 1</strong></div>
+												<div id="contractorContactNumber1_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="optional" style="margin-right:38px"><strong>연락처 2</strong></div>
+												<div id="contractorContactNumber2_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="20">
+												<div class="must" style="margin-right:29px"><strong>주 소</strong></div>
+												<div id="contractorAddress_modal" class="margin0"></div>
+											</td>
+										</tr>
+									</tbody>
+								 </table>  
+							</div>
+						</div>
+					</div>
+					
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+							<div class="panel-heading clearfix">
+								<h3 class="panel-title"><strong>3. 실 거주자</strong></h3>
+							</div>
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+								<table class="table table-bordered table-condensed no-margin">
+									<colgroup>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+									</colgroup>
+									<tbody>
+										<tr>
+											<td colspan="10">
+												<div class="must" style="margin-right:65px"><strong>성명</strong></div>
+												<div id="residentNameGender_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="must"><strong>주민등록번호</strong></div>
+												<div id="residentRegNumber_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="5">
+												<div class="must"><strong>계약자와 관계</strong></div>
+												<div id="relToContractor_modal" class="margin0"></div>
+											</td>
+											<td colspan="5">
+												<div class="must"><strong>실 거주자 수</strong></div>
+												<div id="residentPeopleNumber_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="must" style="margin-right:60px"><strong>주소</strong></div>
+												<div id="residentAddress_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="10">
+												<div class="must" style="margin-right:42px"><strong>연락처 1</strong></div>
+												<div id="residentContactNumber1_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="optional" style="margin-right:37px"><strong>연락처 2</strong></div>
+												<div id="residentContactNumber2_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="10">
+												<div class="optional" style="margin-right:51px"><strong>직장명</strong></div>
+												<div id="residentOfficeName_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="optional" style="margin-right:55px"><strong>직 급</strong></div>
+												<div id="residentOfficeLevel_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="20">
+												<div class="optional" style="margin-right:37px"><strong>직장주소</strong></div>
+												<div id="residentOfficeAddress_modal" class="margin0"></div>
+											</td>
+										</tr>									
+										<tr>
+											<td colspan="10">
+												<div class="optional" style="margin-right:24px"><strong>직장연락처</strong></div>
+												<div id="residentOfficeContactNumber_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="must" style="margin-right:47px"><strong>E-mail</strong></div>
+												<div id="residentEmail_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="20">
+												<div class="must" style="margin-right:33px"><strong>주차 유무</strong></div>
+												<div id="haveCar_modal" class="margin0"></div>
+											</td>
+										</tr>					
+									</tbody>
+								 </table>  
+							</div>
+						</div>
+					</div>
+					
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+							<div class="panel-heading clearfix">
+								<h3 class="panel-title"><strong>4. 전달 유무</strong></h3>
+							</div>
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+								<table class="table table-bordered table-condensed no-margin">
+									<colgroup>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+									</colgroup>
+									<tbody>
+										<tr>
+											<td colspan="8">
+												<div class="must"><strong>중요사항 설명서</strong></div>
+												<div id="sendMsg_modal" class="margin0"></div>
+											</td>
+											<td colspan="12">
+												<div class="must"><strong>품목체크리스트</strong></div>
+												<div id="checkinout_modal" class="margin0"></div>
+											</td>
+										</tr>			
+									</tbody>
+								 </table>  
+							</div>
+						</div>
+					</div>
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin: 20px 0px 0px 0px; padding:0px">
+							<div class="panel-heading clearfix">
+								<h3 class="panel-title"><strong>5. 기타</strong></h3>
+							</div>
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+								<table class="table table-bordered table-condensed no-margin">
+									<colgroup>
+										<col width="100%"></col>
+									</colgroup>
+									<tbody>
+										<tr>
+											<td>
+												<div id="memo_modal" class="margin0"></div>
+											</td>
+										</tr>			
+									</tbody>
+								 </table>  
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<!-- start: JavaScript-->
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/sparkline.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/tiny-scrollbar.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/moment.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/daterangepicker.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom-index.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/datepicker/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.datepicker-ko.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+
+	<script src="{{ STATIC_URL }}ejs/ejs.js"></script>
+	<script src="{{ STATIC_URL }}ejs/ejs_production.js"></script>
+	<script src="{{ STATIC_URL }}ejs/view.js"></script>
+
+	<script src="{{ STATIC_URL }}js/02_01_resident_info.js"></script>
+	<script src="{{ STATIC_URL }}js/common.js"></script>
+	
+	<script type="text/javascript" language="JavaScript">
+		$(document).ready(function(){
+			$("#side-datepicker").datepicker();
+			$("#side-datepicker2").datepicker();
+			$("#side-datepicker3").datepicker();
+			$('.datepicker').datepicker();
+			$('.datepicker').click(function() {
+				$(this).datepicker();
+			});
+
+			$('#buildingName').change(function() {
+				if ($(this).val() == '')
+					$('#buildingRoomNumber').attr('disabled', true);
+				else {
+					getBuildingRooms($(this).val(), 'buildingRoomNumber');
+				}
+			});
+		
+			$('.dateinput').change(function() {
+				if ($(this).attr('id') == "inDate")
+					$('#outDate').attr('disabled', false);
+			});
+			$('#outDate').change(function() {
+				var mdy = $('#outDate').val().split('/');
+				var mdyin = $('#inDate').val().split('.');
+				if (mdyin[0] > mdy[0] ||
+					(mdyin[0] == mdy[0] && mdyin[1] > mdy[1]) ||
+					(mdyin[0] == mdy[0] && mdyin[1] == mdy[1] && mdyin[2] > mdy[2]))
+				{
+					alert('만료일은 입주일 이후의 날짜만 입력 가능합니다.');
+					$('#outDate').val('');
+				}
+			});
+
+			// 검침 내용 바꾸기
+			$('#checkType').change(function() {
+				if ($('#checkType').val() == '1') {
+					$('#checkStatus_0_2').hide();
+					$('#checkStatus_1').show();
+					$('#checkE').val('');
+					$('#checkHWG').val('');
+					$('#checkHG').val('');
+					$('#checkHWW').val('');
+					$('#checkHW').val('');
+				}
+				else {
+					$('#checkStatus_0_2').show();
+					$('#checkStatus_1').hide();
+					$('#checkE').val('');
+					$('#checkG').val('');
+					$('#checkW').val('');
+				}
+			});
+
+			// 보증금 한글표기
+			$('#leaseDeposit').keyup(function() {
+				var deposit = $('#leaseDeposit').val();
+				var koreanDeposit = moneyToKorean(deposit);
+				$('#leaseDeposit2').val(koreanDeposit+ '원');
+			});
+			
+			//  실거주자와 동일인물인지 체크했을 때
+			$('#isContractorResidentSame').click(function() {
+				var chk = $(this).is(':checked');
+				if (chk) {
+					$('#residentRegNumber_1').val( $('#contractorRegNumber_1').val() );
+					$('#residentRegNumber_2').val( $('#contractorRegNumber_2').val() );
+					$('#residentContactNumber1_1').val( $('#contractorContactNumber1_1').val() );
+					$('#residentContactNumber1_2').val( $('#contractorContactNumber1_2').val() );
+					$('#residentContactNumber1_3').val( $('#contractorContactNumber1_3').val() );
+					$('#residentContactNumber2_1').val( $('#contractorContactNumber2_1').val() );
+					$('#residentContactNumber2_2').val( $('#contractorContactNumber2_2').val() );
+					$('#residentContactNumber2_3').val( $('#contractorContactNumber2_3').val() );
+					$('#residentAddress').val( $('#contractorAddress').val() );
+					$('#realResidentName').val( $('#contractorName').val() );
+					$('#residentGender').val( $('#contractorGender').val() );
+					$('#relToContractor').val('본인');
+				}
+				else {
+					$('#residentRegNumber_1').val('');
+					$('#residentRegNumber_2').val('');
+					$('#residentContactNumber1_1').val('');
+					$('#residentContactNumber1_2').val('');
+					$('#residentContactNumber1_3').val('');
+					$('#residentContactNumber2_1').val('');
+					$('#residentContactNumber2_2').val('');
+					$('#residentContactNumber2_3').val('');
+					$('#residentAddress').val('');
+					$('#residentName').val('');
+					$('#residentGender').val('남');
+					$('#relToContractor').val('');
+				}
+			});
+			
+			// 주차 유무
+			$(':radio[name="haveCar"]').click(function() {
+				if ($(this).val() == 'y') {
+					$('#carNumber').attr('disabled', false);
+					$('#parkingFee').attr('disabled', false);
+				}
+				else {
+					$('#carNumber').val('');
+					$('#carNumber').attr('disabled', true);
+					$('#parkingFee').attr('disabled', true);
+				}
+			});
+			
+			// 처음 퇴실 확인/미확인
+			$(':radio[name="checkOut"]').click(function() {
+				if ($(this).val() == 'y') {
+					$('#realOutDate').attr('disabled', false);
+					$('#outReason').attr('disabled', false);
+				}
+				else {
+					$('#realOutDate').attr('disabled', true);
+					$('#outReason').attr('disabled', true);
+					$('#realOutDate').val('');
+					$('#outReason').val('');
+				}
+			});
+
+			// 팝업창을 움직일 수 있게 함
+			$('.dragModal').draggable({
+				handle : ".modal-content"
+			});
+		});			
+	</script>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

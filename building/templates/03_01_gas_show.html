@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<!-- start: Meta -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Yewoo Housing Management System</title>
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: CSS -->
+	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet" media="all">
+	<link type="text/css" href="{{ STATIC_URL }}bootstrap/css/daterange.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}bootstrap/css/main.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}bootstrap/fonts/font-awesome.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet" media="all">
+	<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet" media="all">
+	<!-- end: CSS -->
+
+	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	[endif]-->
+
+	<!-- start: Favicon -->
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<!-- end: Favicon -->
+	
+	<style>
+    table {
+    	table-layout: fixed;
+    }
+    table th, table td {
+    	overflow: hidden;
+    }
+    .must {
+    	color: red;
+    	float: left;
+		margin-right: 10px;
+    }
+    .optional {
+    	color: black;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .margin0 {
+    	margin-left: 0px !important;
+    	margin-right: 0px !important;
+    	margin-top: 0px !important;
+    	margin-bottom: 0px !important;
+	}
+	.width4 {
+		width: 95px;
+	}
+	.width3 {
+		width: 80px;
+	}
+	.width2 {
+		width: 70px;
+	}
+	select {
+		font-family : 'Malgun Gothic' !important;
+	}
+    body {
+		font-family : 'Malgun Gothic' !important;
+	}
+	input {
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-webkit-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-ms-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-input {
+		margin-bottom:0px !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	#myModal {
+		top : 10%;
+		width : 70%;
+		margin : 0px 0px 0px 0px;
+		padding : 0px 0px 0px 0px;
+		left : 15%;
+		overflow-y : hidden;
+	}
+	.modal-dialog {
+		width : auto;
+		margin: 0px 0px 0px 0px;
+	}
+	.modal-body {
+		max-height : 100%;
+		overflow-y : auto;
+	}
+	#side-datepicker .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker2 .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker3 .ui-datepicker {
+		width:auto;
+	}
+	@page { size: landscape; }
+	</style>
+		
+</head>
+
+<body>
+    <!-- start:Header --!>
+    {% include "header.html" with menu="lease" %}
+    <!-- end:Header --!>
+	<div class="container-fluid" style="padding: 0px 20px 0px 20px; margin-top:10px; margin-bottom:40px">
+		<div class="col-md-2" style="padding-left:0px">
+          {% include "sidebar.html" with side_menu="department" %}
+        </div>
+			
+		<!-- start: Content -->	
+		<div id="content" class="col-md-10" style="padding-right:0px; font-size:1.1em">
+			<!-- breadcrumb -->
+			<div class="col-md-12" style="padding:0px; margin-bottom:10px">
+				<ol class="breadcrumb no-margin">
+					<li><a href="#">통합 내역 관리 시스템</a><!--<span class="divider">></span>--></li>
+					<li class="active">가스 요금 내역</li>
+				</ol>
+			</div>
+			
+			<!-- 검색 필터링 -->
+			<div id="filter-menu" style="margin:0px; padding:0px">
+				<div class="panel panel-default col-md-12">
+					<div class="panel-body table-responsive" style="padding:0px">
+						<table class="table table-condensed no-margin" style="margin-bottom:0px">
+							<tr>
+								<td width="25%">
+									<div style="margin-right:5px; float:left">내역 분류</div>
+									<select id="search_type" class="form-control input-sm margin0" style="width:130px">
+										<option value="0">임대 내역</option>
+										<option value="1">최종고지 내역</option>
+										<option value="2">최종납부 내역</option>
+										<option value="3">전기 요금</option>
+										<option value="4" selected>가스 요금</option>
+										<option value="5">수도 요금</option>
+									</select>
+								</td>
+								<td width="20%">
+									<div style="margin-right:5px; float:left">건물명</div>
+									<select id="search_building" class="form-control input-sm margin0" style="width:120px">
+										{% for b in building_name_id %}
+										<option value="b{{ b.id }}" {% if search_building_id == b.id %}selected{% endif %}>{{ b.name }}</option>
+										{% endfor %}
+									</select>
+								</td>
+								<td width="20%">
+									<div style="margin-right:5px; float:left">내역일</div>
+									<div class="form-inline">
+										<select id="search_year" class="form-control input-sm margin0" style="width:100px">
+											<option value="">년도</option>
+											{% for y in search_year_list %}
+											<option value="{{ y }}" {% if y == search_year %}selected{% endif %}>{{ y }}</option>
+											{% endfor %}
+										</select>
+										<select id="search_month" class="form-control input-sm margin0" style="width:60px">
+											<option value="">월</option>
+											{% for m in search_month_list %}
+											<option value="{{ m }}" {% if m == search_month %}selected{% endif %}>{% if m < 10 %}0{% endif %}{{ m }}</option>
+											{% endfor %}
+										</select>
+									</div>
+								</td>
+								<td width="12%">
+									<div style="margin-right:5px; float:left">호수</div>
+									<select id="search_room_num" class="form-control input-sm margin0" style="width:70px">
+										<option value="">전체</option>
+									</select>
+								</td>
+								<td width="10%">
+									<div style="margin-right:5px; float:left">공실여부</div>
+									<input id="search_isEmpty" type="checkbox" {% if search_is_empty == 'true' %}checked="checked"{% endif %}>
+								</td>
+								<td width="13%">
+									<div>
+										<button type="button" class="btn btn-sm btn-primary" onclick="showLeaseInfo();">조회</button>
+										<button type="button" class="btn btn-sm btn-primary" onclick="InitForm();">초기화</button>
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<!-- 가스 요금 현황 -->
+			<div class="row-fluid">
+				<div class="panel panel-default col-md-12" style="margin:0px 0px 5px 0px; padding: 0px">
+					<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border: 0;">
+						<table class="table table-bordered table-condensed no-margin" style="margin-bottom:0px">
+							<colgroup>
+								<col width="10%">
+								<col width="10%">
+								<col width="8%">
+								<col width="10%">
+								<col width="10%">
+								<col width="12%">
+								<col width="10%">
+								<col width="6%">
+								<col width="6%">
+								<col width="6%">
+								<col width="6%">
+								<col width="6%">
+							</colgroup>
+							<tr style="background-color:#edf5fa">
+								<td colspan="7">
+									<div style="font-size:0.8em">건물명/기간</div>
+									<div><h4>No.{{ search_building_id }} {{ cur_building_name }} / <font style="color:red">{{ search_year }}.{{ search_month }}</font> / <font style="color:red">가스 요금</font></h4></div>
+								</td>
+								<td colspan="5">
+									<div style="font-size:0.8em">재실 현황</div>
+									<div><h4>총 <font style="color:red">{{ num_of_rooms }}</font>실, 재실 <font style="color:red">{{num_of_occ_rooms}}</font>실</h4></div>
+								</td>
+							</tr>
+							<tr>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center"></th>
+								<th style="text-align:center">전체</th>
+								<th style="text-align:center">입주</th>
+								<th style="text-align:center">전세</th>
+								<th style="text-align:center">월세</th>
+								<th style="text-align:center">공실</th>
+							</tr>
+							<tr>
+								<td style="text-align:center"></td>
+								<td style="text-align:center"></td>
+								<td style="text-align:center"></td>
+								<td style="text-align:center"></td>
+								<td style="text-align:center"></td>
+								<td style="text-align:center"></td>
+								<td style="text-align:center"></td>
+								<td style="text-align:center">{{ num_of_rooms }}</td>
+								<td style="text-align:center">{{ num_of_occ_rooms}} </td>
+								<td style="text-align:center">{{ num_of_jeon_rooms }}</td>
+								<td style="text-align:center">{{ num_of_woel_rooms }}</td>
+								<td style="text-align:center">{{ num_of_empty_rooms }}</td>
+							</tr>
+						 </table>  
+					</div>
+				</div>
+			</div>
+
+			<!-- 가스요금 첨부파일-->
+			<div class="row-fluid">
+				<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+					<div class="panel-heading clearfix" style="padding:10px 0px 10px 10px">
+						<h3 class="panel-title"><strong>가스요금 첨부파일</strong></h3>
+					</div>
+					<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+						<table class="table table-bordered table-condensed" style="margin: 0px">
+							<tr>
+								<td width="10%" style="vertical-align:middle">업로드 확인</td>
+								<td width="23%">
+									<div class="form-inline">
+										업로드 날짜
+										<input id="uploadDate" type="text" class="form-control input-sm margin0 datepicker" value="{{ excel_uploadDate }}" style="width:120px" disabled />
+										<a href="#" title="현재 파일이 업로드 된 날짜입니다." data-rel="tooltip" class="margin0"><i class="icon-question-sign"></i></a>
+									</div>
+								</td>
+								<td width="7%" style="vertical-align:middle">파일명</td>
+								<td width="60%">
+									<div>
+										<input id="filename" type="text" class="form-control input-sm margin0" placeholder="파일명" value="{{ excel_filename }}" disabled />
+									</div>
+								</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+
+			<!-- 전체 가스 요금 내역 -->
+			<div class="row-fluid">
+				<div class="panel panel-default col-md-12" style="margin:20px 0px 0px 0px; padding: 0px">
+					<div class="panel-heading clearfix" style="padding:5px 5px 5px 10px">
+						<h3 class="panel-title" style="padding-top:7px"><strong>전체 가스 요금 내역</strong></h3>
+						<div class="form-inline" style="float:right">
+							<strong>층별 보기</strong>
+							<select id="filter_floor" class="form-control input-sm margin0" style="width:70px" onChange="filterFloor($(this).val());">
+								<option value="">전체</option>
+							</select>
+							<button type="button" class="btn btn-sm btn-danger" data-toggle="modal" href="#myModal">미리보기</button>
+							<button type="button" class="btn btn-sm btn-primary" onclick="pagePrint();">출력</button>
+						</div>
+					</div>
+					<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+						<div id="contents" class="" style="margin: 0px; padding: 0px; border:0;">
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<!-- end: Content -->
+	</div>
+
+
+
+	<input type="hidden" value="{{ csrf_token }}" />	
+	<!-- 미리보기 (미리보기 버튼 눌렀을 때 보이는 큰 팝업창) -->
+	<div class="modal fade" id="myModal" aria-labelledby="myModalTitle" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">X</button>
+					<h4 class="modal-title" id="myModalTitle">임대 비용(가스 요금)확인</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin:0px 0px 5px 0px; padding: 0px">
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border: 0;">
+								<table class="table table-bordered table-condensed no-margin" style="margin-bottom:0px">
+									<colgroup>
+										<col width="10%">
+										<col width="10%">
+										<col width="8%">
+										<col width="10%">
+										<col width="10%">
+										<col width="12%">
+										<col width="10%">
+										<col width="6%">
+										<col width="6%">
+										<col width="6%">
+										<col width="6%">
+										<col width="6%">
+									</colgroup>
+									<tr style="background-color:#dbdbd2">
+										<td colspan="7">
+											<div style="font-size:0.8em">건물명/기간</div>
+											<div><h4>No.{{ search_building_id }} {{ cur_building_name }} / <font style="color:red">{{ search_year }}.{{ search_month }}</font> / <font style="color:red">가스 요금</font></h4></div>
+
+										</td>
+										<td colspan="5">
+											<div style="font-size:0.8em">재실 현황</div>
+											<div><h4>총 62실, 재실 20실</h4></div>
+										</td>
+									</tr>
+									<tr>
+										<th style="text-align:center"></th>
+										<th style="text-align:center"></th>
+										<th style="text-align:center"></th>
+										<th style="text-align:center"></th>
+										<th style="text-align:center"></th>
+										<th style="text-align:center"></th>
+										<th style="text-align:center"></th>
+										<th style="text-align:center">전체</th>
+										<th style="text-align:center">입주</th>
+										<th style="text-align:center">전세</th>
+										<th style="text-align:center">월세</th>
+										<th style="text-align:center">공실</th>
+									</tr>
+									<tr>
+										<td style="text-align:center"></td>
+										<td style="text-align:center"></td>
+										<td style="text-align:center"></td>
+										<td style="text-align:center"></td>
+										<td style="text-align:center"></td>
+										<td style="text-align:center"></td>
+										<td style="text-align:center"></td>
+										<td style="text-align:center">62</td>
+										<td style="text-align:center">20</td>
+										<td style="text-align:center">10</td>
+										<td style="text-align:center">10</td>
+										<td style="text-align:center">42</td>
+									</tr>
+								 </table>  
+							</div>
+						</div>
+					</div>
+					<!-- 가스요금 첨부파일-->
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin:0px 0px 5px 0px; padding: 0px">
+							<div class="panel-heading clearfix">
+								<h3 class="panel-title"><strong>가스요금 첨부파일</strong></h3>
+							</div>
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+								<table class="table table-bordered table-condensed no-margin" style="margin-bottom:0px">
+									<tr>
+										<td width="10%" style="vertical-align:middle">업로드 확인</td>
+										<td width="23%">
+											<div class="form-inline">
+												업로드 날짜
+												<input id="uploadDate_modal" type="text" class="margin0 form-control input-sm datepicker" value="{{ excel_uploadDate }}" style="width:120px" disabled />
+												<a href="#" title="현재 파일이 업로드 된 날짜입니다." data-rel="tooltip" class="margin0"><i class="icon-question-sign"></i></a>
+											</div>
+										</td>
+										<td width="7%" style="vertical-align:middle">파일명</td>
+										<td width="60%">
+											<div>
+												<input id="filename_modal" type="text" class="form-control input-sm margin0" placeholder="파일명" value="{{ excel_filename }}" disabled />
+											</div>
+										</td>
+									</tr>
+								</table>
+							</div>
+						</div>
+					</div>
+
+					<!-- 전체 가스 요금 내역 -->
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin:0px 0px 5px 0px; padding: 0px">
+							<div class="panel-heading clearfix" style="padding:5px 0px 5px 5px">
+								<h3 class="panel-title" style="padding-top:7px"><strong>전체 가스 요금 내역</strong></h3>
+								<div style="text-align:right; padding-right:5px">
+									<button class="btn btn-sm btn-primary" type="button" onclick="pagePrint();">출력</button>
+								</div>
+							</div>
+							<div id="contents_modal" class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+								<!-- ejs template으로 db내용을 불러온다. -->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+
+
+	<!-- start: JavaScript-->
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/sparkline.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/tiny-scrollbar.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/moment.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/daterangepicker.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom-index.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/datepicker/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.datepicker-ko.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+
+	<script src="{{ STATIC_URL }}ejs/ejs.js"></script>
+	<script src="{{ STATIC_URL }}ejs/ejs_production.js"></script>
+	<script src="{{ STATIC_URL }}ejs/view.js"></script>
+
+	<script src="{{ STATIC_URL }}js/03_01_gas_show.js"></script>
+	<script src="{{ STATIC_URL }}js/common.js"></script>
+	
+	<script type="text/javascript" language="JavaScript">
+		$(document).ready(function(){
+			$("#side-datepicker").datepicker();
+			$("#side-datepicker2").datepicker();
+			$("#side-datepicker3").datepicker();
+			$('.datepicker').datepicker();
+			$('.datepicker').click(function() {
+				$(this).datepicker();
+			});
+
+			// 건물을 하나 선택할 때, 그 건물에 속한 '호수' 전체 불러오기
+			getBuildingRooms('b{{ search_building_id }}', 'search_room_num', '{{ search_room_num }}');
+			$('#search_building').change(function() {
+				getBuildingRooms($(this).val(), 'search_room_num');
+			});
+			
+			$('#inDate').change(function() {
+				var mdy = $('#inDate').val().split('/');
+				$('#inDate').val(mdy[2]+'.'+mdy[0]+'.'+mdy[1]);
+				$('#outDate').attr('disabled', false);
+			});
+			
+			$('#outDate').change(function() {
+				var mdy = $('#outDate').val().split('/');
+				$('#outDate').val(mdy[2]+'.'+mdy[0]+'.'+mdy[1]);
+				var mdyin = $('#inDate').val().split('.');
+				if (mdyin[0] > mdy[2] ||
+					(mdyin[0] == mdy[2] && mdyin[1] > mdy[0]) ||
+					(mdyin[0] == mdy[2] && mdyin[1] == mdy[0] && mdyin[2] > mdy[1]))
+				{
+					alert('만료일은 입주일 이후의 날짜만 입력 가능합니다.');
+					$('#outDate').val('');
+				}
+			});
+
+			// ejs template 불러오기
+			getContents('{{ search_room_num }}');
+		});			
+	</script>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

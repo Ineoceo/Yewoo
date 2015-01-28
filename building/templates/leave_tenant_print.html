@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ko" ng-app="yewooApp">
+<head>
+	<!-- start: Meta -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Yewoo Housing Management System</title>
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: CSS -->
+	<link id="bootstrap-style" href="{{ STATIC_URL }}print/bootstrap.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}print/bootstrap-responsive.min.css" rel="stylesheet">
+	<link id="base-style" href="{{ STATIC_URL }}print/style.css" rel="stylesheet">
+	<link id="base-style-responsive" href="{{ STATIC_URL }}print/style-responsive.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}css/print.css" rel="stylesheet" media="print">
+	<!-- end: CSS -->
+
+    <!-- start: angular scripts -->
+    <script src="{{ STATIC_URL }}underscorejs/underscore-min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular.js"></script>
+    <!--<script src="{{ STATIC_URL }}angularjs/angular.min.js"></script>-->
+	<script src="{{ STATIC_URL }}js/leave_tenant_print.angular.js"></script>
+    <!-- end: angular scripts -->
+
+	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	[endif]-->
+
+	<!-- start: Favicon -->
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<!-- end: Favicon -->
+	
+	<style>
+    table {
+    	table-layout: fixed;
+    }
+    table th, table td {
+    	overflow: hidden;
+    }
+    .white {
+    	background-color: #ffffff;
+    }
+    .must {
+    	color: red;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .optional {
+    	color: black;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .margin0 {
+    	margin-left: 0px !important;
+    	margin-right: 0px !important;
+    	margin-top: 0px !important;
+		margin-bottom: 0px !important;
+	}
+	select {
+	}
+    body {
+		font-size : 0.77em;
+		line-height : 17px;
+	}
+	input {
+	}
+	::-webkit-input-placeholder {
+		font-size : 0.8em !important;
+	}
+	::-moz-placeholder {
+		font-size : 0.8em !important;
+	}
+	:-moz-placeholder {
+		font-size : 0.8em !important;
+	}
+	:-ms-input-placeholder {
+		font-size : 0.8em !important;
+	}
+	:-input {
+		margin-bottom:0px !important;
+	}
+
+    @page { size: A4 landscape; }
+	
+	</style>
+</head>
+
+<body id="leave" style="background: white; padding: 5px;" ng-controller="MainCtrl" class="owner dotum">
+    <!-- start:Header --!>
+    <!-- end:Header --!>
+	
+	{% load humanize %}	
+    <input type="hidden" id="print" value="{{ print }}" />
+    <input type="hidden" id="rid" value="{{ result.id }}" />
+    <input type="hidden" id="bid" value="{{ result.buildingName }}" />
+
+	<div class="container-fluid" ng-repeat="paged in pagedCases">
+        <table style="min-height:18cm !important;">
+            <!-- start first column -->
+            <tr>
+				<td width="72%" style="padding-right:10px; vertical-align:top; border-right: 1px solid black;">
+					<div class="titlebox">임대료 및 공과금 납부 상세 명세</div>
+					<!-- 내역 table -->
+					<table width="100%" class="fullbox table-content contactbox textCenter">
+						<colgroup>
+							<col width="6%"/>
+							<col width="12%"/>
+							<col width="4%"/>
+							<col width="11%"/>
+							<col width="11%"/>
+							<col width="11%"/>
+							<col width="11%"/>
+
+							<col width="5%"/>
+							<col width="6%"/>
+							<col width="6%"/>
+
+							<col width="6%"/>
+							<col width="6%"/>
+
+							<col width="5%"/>
+						</colgroup>
+						<tr class="graycell">
+							<td rowspan="2">구분</td>
+							<td rowspan="2">년도/월</td>
+							<td rowspan="2">회차</td>
+							<td colspan="4">납부 내역</td>
+							<td colspan="3">연체 내역</td>
+							<td rowspan="2" colspan="2">납부 확인</td>
+							<td class="noborderright" rowspan="2">납부처리</td>
+						</tr>
+						<tr class="graycell">
+							<td>납부 금액</td>
+							<td>입금액</td>
+							<td>입금일</td>
+							<td>미납액</td>
+							<td colspan="2">미납 회차</td>
+							<td>누적</td>
+						</tr>
+						<tr ng-repeat="c in paged" class="itemcell">
+							<td class="graycell" ng-if="c.yearSpan > 0" ng-attr-rowspan="&#123;&#123;c.yearSpan&#125;&#125;"><span ng-bind="c.year"></span>년</td>
+							<td><span ng-bind="c.year"></span>년 <span ng-if="item.month < 10">0</span><span ng-bind="c.month"></span>월</td>
+							<td><span ng-bind="c.number"></span></td>
+							<td><span ng-bind="c.totalFee | number:0"></span></td>
+							<td><span ng-bind="c.amountPay | number:0"></span></td>
+							<td><span ng-bind="c.payDate | date:'yy.MM.dd'"></span></td>
+							<td><span ng-bind="c.amountNoPay | number:0"></span></td>
+							<td>
+								<span ng-if="c.delayNumber > 0">
+									<span ng-if="c.amountPay == 0 && c.amountNoPay > 0">미납</span>
+									<span ng-if="c.amountPay > 0 && c.amountNoPay > 0">부분</span>
+									<span ng-if="c.amountNoPay == 0">완납</span>
+								</span>
+								<span ng-if="c.delayNumber <= 0">고지</span>
+							</td>
+
+							<td>
+								<span ng-if="c.delayNumber > 0"><span ng-bind="c.delayNumber" ></span>회</span>
+								<span ng-if="c.delayNumber <= 0"><span ng-bind="c.number"></span>회</span>
+							</td>
+							<td>
+								<span ng-if="c.delayNumber > 0" ><span ng-bind="c.accumNumber"></span>회</span>
+								<span ng-if="c.delayNumber <= 0">0회</span>
+							</td>
+							<td>
+								<span ng-if="c.payStatus == -1">완납</span>
+								<span ng-if="c.payStatus != -1">납부</span>
+							</td>
+							<td>
+								<span ng-if="c.payStatus == -1">없음</span>
+								<span ng-if="c.payStatus != -1"><span ng-bind="c.payStatus"/>회</span>
+							</td>
+							<td class="noborderright">
+								<span ng-if="c.payStatus == -1">납부</span>
+								<span ng-if="c.payStatus == 0">미납</span>
+								<span ng-if="c.payStatus != 0 && c.payStatus != -1">부분</span>
+							</td>
+						</tr>
+						<tr class="itemcell">
+							<td class="graycell bold" colspan="3">소계</td>
+							<td class="graycell bold"><span ng-bind="sum_fee | number:'0'"></span></td>
+							<td class="graycell bold"><span ng-bind="sum_pay | number:'0'"></span></td>
+							<td class="graycell bold"></td>
+							<td class="graycell bold"><span ng-bind="sum_nopay | number:'0'"></span></td>
+							<td colspan="6" class="graycell noborderright"></td>
+						</tr>
+					</table>
+					<!-- end 내역 table -->
+					<div class="titlebox">추가 금액 명세</div>
+					<!-- 추가금액 table -->
+					<table width="100%" class="fullbox table-content textCenter" style="border:1px solid black !important;">
+						<tr ng-repeat="c in data.unpaidaddeditems"  style="border:1px solid black !important;">
+							<td class="graycell" width="25%" style="border:1px solid black !important;"><b>추가 금액</b></td>
+							<td width="30%" style="border:1px solid black !important; background-color: white !important;"><span ng-bind="c.fields.title"></span> <span ng-bind="c.fields.subType"></span><span ng-if="c.fields.year&&c.fields.month"> (<span ng-bind="c.fields.year"></span>년 <span ng-bind="c.fields.month"></span>월)</span></td>
+							<td width="10%" style="border:1px solid black !important; background-color: white !important;"><span ng-bind="c.fields.amount | number:'0'"></span></td>
+							<td width="35%" style="border:1px solid black !important; background-color: white !important;"></td>
+						</tr>
+						<tr class="graycell" style="border:1px solid black !important;">
+							<td style="border:1px solid black !important;"><b>소계2</b></td>
+							<td style="border:1px solid black !important;"></td>
+							<td style="border:1px solid black !important;"><span ng-bind="sum_addeditems | number:'0'"></span></td>
+							<td style="border:1px solid black !important;"></td>
+						</tr>
+					</table>
+					<!-- end 추가금액 table -->
+				</td>
+				<!-- end first column -->
+
+				<!-- second column -->
+				<td width="28%" style="padding-left:10px; vertical-align:top;">
+					<!-- 임차인 -->
+					<div class="titlebox">임 차 인</div>
+					<table class="fullbox">
+						<tr class="bold">
+							<td width="33.33%" class="paddingSmallLeft">
+								<span class="textSubTitle" ng-bind="data.resident.fields.buildingNameKor"></span>
+							</td>
+							<td width="33.33%" class="textCenter">
+								<span class="" ng-bind="data.resident.fields.roomNumber"></span>호
+							</td>
+							<td width="33.33%" class="textRight paddingSmallRight">
+								<span class="" ng-bind="data.resident.fields.residentName"></span>님
+							</td>
+						</tr>
+					</table>
+					<table class="fullbox table-content textBasic">
+						<colgroup>
+							<col width="30%"/>
+							<col width="5%"/>
+							<col width="65%"/>
+						</colgroup>
+						<tr style="line-height:20px; !important;">
+							<td class="bold paddingSmallLeft">임대기간</td>
+							<td class="textCenter bold">|</td>
+							<td class="" style="letter-spacing:-1px">
+								<span ng-bind="data.resident.fields.inDate | date:'yyyyMMdd'"></span> ~ <span ng-bind="data.resident.fields.outDate | date:'yyyyMMdd'"></span> (<span ng-bind="data.resident.fields.leasePayWay"></span>제)
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="bold paddingLeft">임대일</td>
+							<td class="textRight" style="padding-right:10px"><span ng-bind="data.resident.fields.inDate | date:'yyyy.MM.dd'"></span></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="bold paddingLeft">만료일</td>
+							<td class="textRight" style="padding-right:10px"><span ng-bind="data.resident.fields.outDate | date:'yyyy.MM.dd'"></span></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="bold paddingLeft">퇴거일</td>
+							<td class="textRight" style="padding-right:10px"><span ng-bind="data.resident.fields.realOutDate | date:'yyyy.MM.dd'"></span></td>
+						</tr>
+						<tr>
+							<td colspan="3" class="paddingLeft" style="line-height:200%">
+								*퇴거사유 : <span ng-bind="data.resident.fields.outReason"></span>
+							</td>
+						</tr>
+					</table>
+					<br/>
+
+					<!-- 미납금 명세 -->
+					<div class="titlebox">
+						미납금 명세
+					</div>
+					<table class="fullbox" style="border-bottom: 1px solid black; !important;">
+						<tr>
+							<td width="45%" class="paddingSmallLeft lsSmall" style="line-height:110%">
+								현재 미납된<br />임대료 및 공과금액은 
+							</td>
+							<td width="55%" class="textRight textLarge paddingSmallRight lsSmall">
+								<span class="textLarge" ng-bind="sum_nopay | number:0"></span>원
+							</td>
+						</tr>
+					</table>
+					<br/>
+
+					<div class="bold paddingSmallLeft">+ 납부 상세 명세</div>
+					<table class="fullbox table-content">
+						<colgroup>
+							<col width="35%"/>
+							<col width="65%"/>
+						</colgroup>
+						<tr>
+							<td class="bold paddingSmallLeft">총 납부 금액</td>
+							<td class="textRight paddingRight"><span ng-bind="sum_fee | number:0"></span>원</td>
+						</tr>
+						<tr>
+							<td class="bold paddingLeft">입금액</td>
+							<td class="textRight paddingRight"><span ng-bind="sum_pay | number:0"></span>원</td>
+						</tr>
+						<tr>
+							<td class="bold paddingLeft">미납액</td>
+							<td class="textRight paddingRight"><span ng-bind="sum_nopay | number:0"></span>원</td>
+						</tr>
+					</table>
+					<br/>
+
+					<!-- 시설 관리비 발생 내역 table -->
+					<div class="titlebox">
+						금액 명세
+					</div>
+					<table class="fullbox table-content textCenter">
+						<colgroup>
+							<col width="30%"/>
+							<col width="30%"/>
+							<col width="35%"/>
+							<col width="15%"/>
+						</colgroup>
+						<tr ng-repeat="m in data.payoffs" class="itemcell">
+							<td class="graycell textCenter">
+								<span ng-bind="m.fields.title"></span>
+							</td>
+							<td class="whitecell textCenter">
+								<span ng-if="m.fields.date" ng-bind="m.fields.date"></span>
+								<span ng-if="!m.fields.date">-</span>
+							</td>
+							<td class="whitecell textCenter">
+								<span ng-if="m.fields.amount"><span ng-bind="m.fields.amount | number:'0'"></span></span>
+								<span ng-if="!m.fields.amount">0</span>
+							</td>
+							<td class="whitecell textCenter noborderright">
+								<span ng-if="m.fields.subType" ng-bind="m.fields.subType"></span>
+								<span ng-if="!m.fields.subType">-</span>
+							</td>
+						</tr>
+					</table>  
+					<br/>
+
+					<!-- end 추가 금액 table -->
+					<!-- 시설 관리비 발생 내역 table -->
+					<div class="titlebox">
+						검침 명세
+					</div>
+					<table class="fullbox contactbox">
+						<colgroup>
+							<col width="20%" class="textCenter"/>
+							<col width="15%" class="textCenter"/>
+							<col width="15%" class="textCenter"/>
+							<col width="20%" class="textCenter"/>
+							<col width="15%" class="textCenter"/>
+							<col width="15%" class="textCenter"/>
+						</colgroup>
+						<tr ng-repeat="m in data.reads" class=" textCenter">
+							<td class="graycell">
+								원격검침
+							</td>
+							<td class="whitecell">
+								<span ng-bind="m.fields.title"></span>
+							</td>
+							<td class="whitecell">
+								<span ng-bind="m.fields.amount" ng-show="m.fields.amount"></span>
+								<span ng-if="!m.fields.amount">-</span>
+							</td>
+							<td class="graycell">
+								실계량기 
+							</td>
+							<td class="whitecell">
+								<span ng-if="m.fields.subType" ng-bind="m.fields.subType"></span>
+								<span ng-if="!m.fields.subType">-</span>
+							</td>
+							<td class="whitecell noborderright">
+								<span ng-if="m.fields.desc" ng-bind="m.fields.desc"></span>
+								<span ng-if="!m.fields.desc">-</span>
+							</td>
+						</tr>
+					</table>  
+				</td>
+			</tr>
+            <!-- end second column -->
+		</table>
+        <div ng-if="$index + 1 != pagedCases.length" style="page-break-after: always;"></div>
+	</div>
+
+
+
+	
+
+	<!-- start: JavaScript-->
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/sparkline.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/tiny-scrollbar.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/moment.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/daterangepicker.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom-index.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/datepicker/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.datepicker-ko.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+
+	<script src="{{ STATIC_URL }}ejs/ejs.js"></script>
+	<script src="{{ STATIC_URL }}ejs/ejs_production.js"></script>
+	<script src="{{ STATIC_URL }}ejs/view.js"></script>
+
+	<script src="{{ STATIC_URL }}js/common.js"></script>
+			
+	<script type="text/javascript" language="JavaScript">
+		$(document).ready(function(){
+		});			
+	</script>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

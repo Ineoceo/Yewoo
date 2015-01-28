@@ -1,0 +1,74 @@
+<table class="table table-bordered table-condensed no-margin" style="margin-bottom:0px">
+	<tr>
+		<th style="text-align:center; vertical-align:middle" width="6%">년도/월</th>
+		<th style="text-align:center; vertical-align:middle" width="4%">회차</th>
+		<th style="text-align:center; vertical-align:middle" width="6%">합계금액</th>
+		<th style="text-align:center; vertical-align:middle" width="7%">납부예정일</th>
+		<th style="text-align:center; vertical-align:middle" width="4%">누적</th>
+		<th style="text-align:center; vertical-align:middle" width="9%">납부확인</th>
+		<th style="text-align:center; vertical-align:middle" width="8%">입금일</th>
+		<th style="text-align:center; vertical-align:middle" width="11%">입금</th>
+		<th style="text-align:center; vertical-align:middle" width="11%">미납</th>
+		<th style="text-align:center; vertical-align:middle" width="8%">누적처리</th>
+		<th style="text-align:center; vertical-align:middle" width="9%">다음 연체료</th>
+		<th style="text-align:center; vertical-align:middle" width="10%">다음 총 부과금액</th>
+		<th style="text-align:center; vertical-align:middle" width="8%">납부처리일</th>
+	</tr>
+	<tr>
+		<td style="text-align:center; vertical-align:middle"><%= data.year %>.<%= data.month %></td>
+		<td style="text-align:center; vertical-align:middle"><%= data.number %></td>
+		<td style="text-align:center; vertical-align:middle"><%= data.totalFee.toLocaleString().replace('.00','') %></td>
+		<td style="text-align:center; color:blue; vertical-align:middle"><%= data.dueDate %></td>
+		<td style="text-align:center; vertical-align:middle"><%= data.accumNumber %>회</td>
+		<td style="text-align:center; vertical-align:middle">
+			<select id="input_payStatus" class="form-control input-sm margin0 fontmini2" disabled >
+				<option value="<%= data.payStatus+1 %>"><%= data.payStatus+1 %>회</option>
+			</select>
+		</td>
+		<td style="text-align:center">
+			<input id="input_payDate" type="text" class="form-control input-sm margin0 fontmini datepicker" value="" />
+		</td>
+		<td style="text-align:center; vertical-align:middle">
+			<div class="form-inline">
+				<input id="input_amountPay" type="text" style="width:66%" class="form-control input-sm fontmini" value="0"/>원 입금
+				<input id="input_amountPayOriginal" type="hidden" value="<%= data.amountPay %>" />
+				<input id="input_amountPaySum" type="hidden" value="<%= data.amountPaySum %>" />
+			</div>
+		</td>
+		<td style="text-align:center; vertical-align:middle">
+			<div class="form-inline">
+				<input id="input_amountNoPay" type="text" style="width:66%" class="margin0 form-control input-sm fontmini" value="<%= data.amountNoPay.toLocaleString().replace('.00','') %>" disabled />원 미납
+			</div>
+		</td>
+		<td style="text-align:center; vertical-align:middle">
+			<select id="input_confirmAccum" class="margin0 form-control input-sm fontmini2">
+			<% for (i = 0; i < 10; i++) { %>
+				<option value="<%= i %>" <% if (data.accumNumber+1 == i) { %>selected<% } %>><%= i %>회</option>
+			<% } %>
+			</select>
+		</td>
+		<td style="text-align:center; vertical-align:middle">
+			<div class="form-inline">
+				<input id="input_delayFee" type="text" style="width:75%" class="form-control input-sm margin0 fontmini" value="<%= data.delayFee.toLocaleString().replace('.00','') %>" disabled />
+				원
+			</div>
+		</td>
+		<td style="text-align:center; vertical-align:middle">
+			<div class="form-inline">
+				<input id="input_imposeFee" type="text" style="width:75%" class="form-control input-sm margin0 fontmini" value="<%= (data.amountNoPay+data.delayFee).toLocaleString().replace('.00','') %>" disabled />
+				원
+			</div>
+		</td>
+		<td style="text-align:center; vertical-align:middle"><input id="input_confirmDate" type="text" class="form-control input-sm margin0 fontmini datepicker" value="" /></td>
+	</tr>
+	<tr>
+		<th colspan="3">납부 처리 사유</th>
+		<td colspan="10"><input id="input_payMsg" type="text" class="form-control input-sm margin0" placeholder="사유를 입력해주세요." /></td>
+	</tr>
+	<tr>
+		<td colspan="13" style="text-align:center">
+			<button type="button" class="btn btn-sm btn-primary" onclick="saveInputInfo();">저  장</button>
+		</td>
+	</tr>
+</table>
+

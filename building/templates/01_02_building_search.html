@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<!-- start: Meta -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Yewoo Housing Management System</title>
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: CSS -->
+	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+	<link type="text/css" href="{{ STATIC_URL }}bootstrap/css/daterange.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}bootstrap/css/main.css" rel="stylesheet" media="screen">
+	<link href="{{ STATIC_URL }}bootstrap/fonts/font-awesome.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}bootstrap/js/datepicker/ui.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet">
+	<!-- end: CSS -->
+
+	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	[endif]-->
+
+	<!-- start: Favicon -->
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<!-- end: Favicon -->
+	
+	<style>
+    table {
+    	table-layout: fixed;
+    }
+    table th, table td {
+    	overflow: hidden;
+    }
+    .white {
+    	background-color: #ffffff;
+    }
+    .must {
+    	color: red;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .optional {
+    	color: black;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .margin0 {
+    	margin-left: 0px !important;
+    	margin-right: 0px !important;
+    	margin-top: 0px !important;
+		margin-bottom: 0px !important;
+	}
+	select {
+		font-family : 'Malgun Gothic' !important;
+	}
+    body {
+		font-family : 'Malgun Gothic' !important;
+	}
+	input {
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-webkit-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-ms-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-input {
+		margin-bottom:0px !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	</style>
+		
+</head>
+
+<body>
+    <!-- start:Header --!>
+    {% include "header.html" with menu="building" %}
+    <!-- end:Header --!>
+	
+    <div class="container-fluid" style="padding: 0px 20px 0px 20px; margin-top:10px; margin-bottom:40px">
+		<div class="col-md-2" style="padding-left:0px">
+          {% include "sidebar.html" with side_menu="department" %}
+        </div>
+			
+		<!-- start: Content -->	
+		<div id="content" class="col-md-10" style="padding-right:0px; font-size:1.1em">
+			<!-- breadcrumb -->
+			<div class="col-md-12" style="padding:0px; margin-bottom:10px">
+				<ol class="breadcrumb no-margin">
+					<li><a href="#">건물 관리</a></li>
+					<li class="active">등록 건물 정보 확인</li>
+				</ol>
+			</div>
+				
+			<div>
+				<form class="form-inline" onSubmit="return false;">
+					<div class="col-md-8" style="margin-bottom:5px">
+						<input id="searchWord" class="margin0 input-sm" type="text" placeholder="검색어 입력" />
+						<button type="button" class="btn btn-sm btn-primary" onclick="Search();">검색</button>
+						<button type="button" id="detail_btn" class="btn btn-sm btn-primary">상세</button>
+						<button type="button" class="btn btn-sm btn-primary" onclick="SearchAll();">전체보기</button>
+					</div>	
+				</form>
+			</div>
+				
+			<!-- start: table -->
+			<div id="search_detail" class="row-fluid" style="display:none;">
+				<div class="col-md-12" style="margin:0px 0px 0px 0px; padding:0px 0px 0px 0px">
+					<table class="table table-bordered table-condensed no-margin" style="margin-bottom:5px">
+						<colgroup>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+						</colgroup>
+						<tbody>
+							<tr>
+								<td colspan="6">
+									<div class="optional" style="margin-right:27px"><strong>건물명</strong></div>
+									<select id="search_name" class="form-control input-sm margin0" style="width:130px">
+										<option value="">선택</option>
+										{% for b in buildings %}
+										<option value="{{ b.name }}">{{ b.name }}</option>
+										{% endfor %}
+									</select>
+								</td>
+								<td colspan="5">
+									<div class="optional" style="margin-right:27px"><strong>건물 번호</strong></div>
+									<select id="search_number" class="form-control input-sm margin0" style="width:90px">
+										<option value="">선택</option>
+										{% for b in buildings %}
+										<option value="{{ b.number }}">No.{{ b.number }}</option>
+										{% endfor %}
+									</select>
+								</td>
+								<td colspan="5">
+									<div class="optional" style="margin-right:27px"><strong>건물 형식</strong></div>
+									<select id="search_type" class="form-control input-sm margin0" style="width:120px">
+										<option value="">선택</option>
+										<option value="0">임대 건물</option>
+										<option value="1">주상 복합</option>
+									</select>
+								</td>
+								<td colspan="4">
+									<div class="optional" style="margin-right:27px"><strong>담당자</strong></div>
+									<input id="search_manager" type="text" class="form-control input-sm margin0" style="width:90px" />
+								</td>
+							</tr>
+							<tr>
+								<td colspan="10"> 
+									<div class="optional"><strong>건물 층수</strong></div>
+									<select id="search_startFloor" class="form-horizontal input-sm margin0" style="width:80px">
+										<option value="">선택</option>
+										<option value="지하">지하</option>
+										<option value="지상">지상</option>
+									</select>
+									<select id="search_startFloorNumber" class="form-horizontal input-sm margin0" style="width:80px">
+										<option value="">선택</option>
+										{% for i in range|slice:":10" %}
+										<option value="{{ i }}">{{ i }}층</option>
+										{% endfor %}
+									</select>
+									<span class="margin0">~</span>
+									<select id="search_endFloor" class="form-horizontal input-sm margin0" style="width:80px">
+										<option value="">선택</option>
+										<option value="지하">지하</option>
+										<option value="지상">지상</option>
+									</select>
+									<select id="search_endFloorNumber" class="form-horizontal input-sm margin0" style="width:80px">
+										<option value="">선택</option>
+										{% for i in range|slice:":10" %}
+										<option value="{{ i }}">{{ i }}층</option>
+										{% endfor %}
+									</select>
+								</td>
+								<td colspan="6"> 
+									<div class="optional"><strong>방 개수</strong></div>
+									<select id="search_numRoomStart" class="form-horizontal input-sm margin0" style="width:80px">
+										<option value="">선택</option>
+										{% for i in range %}
+										<option value="{{ i }}">{{ i }}개</option>
+										{% endfor %}
+									</select>
+									<span class="margin0">~</span>
+									<select id="search_numRoomEnd" class="form-horizontal input-sm margin0" style="width:80px">
+										<option value="">선택</option>
+										{% for i in range %}
+										<option value="{{ i }}">{{ i }}개</option>
+										{% endfor %}
+									</select>
+								</td>
+								<td colspan="4"> 
+									<div class="optional"><strong>주차 여부</strong></div>
+									<select id="search_parkingNum" class="form-control input-sm margin0" style="width:90px">
+										<option value="">선택</option>
+										{% for i in range %}
+										<option value="{{ i }}">{{ i }}면</option>
+										{% endfor %}
+									</select>
+								</td>
+							</tr>
+						</tbody>
+					 </table>
+					 
+					 <div style="text-align:center">
+						<form class="form-inline" onSubmit="return false;">
+							<div style="margin-bottom:5px">
+								<button type="button" class="btn btn-sm btn-primary" onclick="SearchDetail();">조회</button>
+								<button type="button" class="btn btn-sm btn-primary" onclick="InitSearchDetail();">초기화</button>
+							</div>	
+						</form>
+					 </div>
+				</div>
+			</div>
+
+			<!-- 검색 결과 나타내기 -->
+			<div id="search_result" class="row-fluid" style="display:none;">
+				<div class="panel panel-default col-md-12" style="margin:0px; padding:0px; margin-top:20px">
+					<div class="panel-heading clearfix">
+						<h3 class="panel-title"><strong>등록 건물 확인</strong></h3>
+					</div>
+					<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0; font-size : 0.95em">
+						<table class="table table-bordered table-condensed table-hover">
+							<thead>
+								<tr>
+									<!--<th width="5%"><input id="result_checkall" type="checkbox"></th>-->
+									<th width="8%" style="text-align:center">No.</th>
+									<th width="15%" style="text-align:center">건물명</th>
+									<th width="15%" style="text-align:center">건물 형식</th>
+									<th width="15%" style="text-align:center">담당자</th>
+									<th width="25%" style="text-align:center">건물 층수</th>
+									<th width="11%" style="text-align:center">방 개수</th>
+									<th width="11%" style="text-align:center">주차 여부</th>
+								</tr>
+							</thead>
+							<tbody id="search_result_content">
+							</tbody>
+						 </table>  
+					</div>
+				</div>
+			</div>
+		
+		</div>
+	</div>
+			
+
+	<!-- start: JavaScript-->
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/sparkline.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/tiny-scrollbar.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/moment.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/daterangepicker.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom-index.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/datepicker/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.datepicker-ko.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+
+	<script src="{{ STATIC_URL }}ejs/ejs.js"></script>
+	<script src="{{ STATIC_URL }}ejs/ejs_production.js"></script>
+	<script src="{{ STATIC_URL }}ejs/view.js"></script>
+
+	<script src="{{ STATIC_URL }}js/01_02_building_search.js"></script>
+	<script src="{{ STATIC_URL }}js/common.js"></script>
+	
+	<script type="text/javascript" language="JavaScript">
+		$(document).ready(function(){
+			// show sidebar
+			show_sidebar();
+			$('#tabmenu a').click(function(e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+			$("#side-datepicker").datepicker();
+			$("#side-datepicker2").datepicker();
+			$("#side-datepicker3").datepicker();
+				
+			// 상세 버튼
+			$('#detail_btn').click(function() {
+				if ($('#search_detail').css('display') == 'none')
+					$('#search_detail').show();
+				else
+					$('#search_detail').hide(); 
+			});
+
+			
+			$('#result_checkall').click(function() {
+				var chk = $(this).is(':checked');				
+				$('input[name=result_check]:checkbox').each(function() {
+					$(this).attr('checked', chk);
+				});
+			});
+			
+			SearchAll();
+		});			
+	</script>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

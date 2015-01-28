@@ -1,0 +1,108 @@
+	<div class="container-fluid" style="margin-top:10px; padding: 0px 20px 0px 20px">
+        <h3><font color="#3784b1"><b>Yewoo Housing Management System</b></font></h3>
+	</div>
+
+	<!--
+	<div class="container-fluid" style="padding: 0px 20px 0px 20px; margin: 25px 0px 10px 0px">
+		<div class="nav navbar-nav col-md-2" style="padding-left:10px">
+			<div style="font-size:18px; color:#000000">
+				{% if user.is_superuser %}총관리자{% else %}일반{% endif %}
+				<a href="#" class="navbar-link">{{ user.userprofile.name }}</a> 님
+				<a href="/logout/" style="margin-left:10px; font-size:16px">로그아웃</a>
+			</div>
+		</div>
+		
+		<div class="collapse navbar-collapse" style="font-size:14px">
+			<ul class="nav navbar-nav" style="padding-left:20px">
+				<li style="margin-right:20px">업무 게시물쓰기</li>
+				<li style="margin-right:20px">안 읽은 글</li>
+				<li style="margin-right:20px">내 게시물</li>
+				<li style="margin-right:20px">통합 게시판</li>
+				<li style="margin-right:20px">내 일정 관리</li>
+				<li style="margin-right:20px">내 정보 관리</li>
+			</ul>
+		</div>
+	</div>
+	-->
+
+    <div class="container-fluid" style="padding: 0px 20px 0px 20px;">
+		<header class="navbar" role="navigation" style="">
+			<div class="col-md-12">
+				<div class="navbar-nav col-md-2">
+					<div style="font-size:15px; color:#000000">
+						{% if user.is_superuser %}총관리자{% else %}일반{% endif %}
+						<a href="#" class="navbar-link">{{ user.userprofile.name }}</a> 님
+						<a href="/logout/" style="margin-left:10px; font-size:13px">로그아웃</a>
+					</div>
+					<!--
+					<div style="font-size:12px; color:#000000">
+						최근 접속일자 {{ user.last_login|date:"Y.m.d H:i:s" }}
+					</div>
+					-->
+				</div>
+				<nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+					<ul class="nav navbar-nav">
+						{% if menu == "building" %}
+						<li class="dropdown">
+						{% else %}
+						<li class="dropdown">
+						{% endif %}
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">건물 관리 시스템<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="/building/register/">건물 정보 등록</a>
+								</li><li><a href="/building/search/building/">등록 건물 정보 확인</a>
+								</li><li><a href="/building/search/rooms/">등록 호수 정보 확인</a></li>
+							</ul>
+						</li>
+						
+						{% if menu == "resident" %}
+						<li class="dropdown active">
+						{% else %}
+						<li class="dropdown">
+						{% endif %}
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">입주자 관리 시스템<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="/resident/show/">입주자 정보 확인(목록)</a>
+								</li><li><a href="/resident/info/">입주자 정보 입력(개별)</a>
+								</li><li><a href="/resident/infoFile/">입주자 정보 입력(파일)</a></li>
+							</ul>
+						</li>
+						
+						<li class=""><a href="#contact">시설 관리 시스템</a></li>
+						
+						{% if menu == "lease" %}
+						<li class="dropdown active">
+						{% else %}
+						<li class="dropdown">
+						{% endif %}
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">통합 내역 관리 시스템<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="/lease/show/lease/">통합 내역 관리(확인)</a>
+								</li><li><a href="/lease/input/check/">고지 내역 관리(입력)</a>
+								</li><li><a href="/lease/payment/">납부 내역 관리(입력)</a>
+								</li><li><a href="/lease/bill/">표준 고지서 공지 입력</a>
+								</li><li><a href="/lease/leave/">퇴거 정산서 관리(입력/확인)</a></li>
+							</ul>
+						</li>
+						
+						{% if menu == "manage" %}
+						<li class="dropdown active">
+						{% else %}
+						<li class="dropdown">
+						{% endif %}
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">관리자 시스템<b class="caret"></b></a>
+							<ul class="dropdown-menu">
+								<li><a href="/manage/activate/">사원 승인 관리</a>
+								</li><li><a href="/manage/accountinfo/">사원 정보 관리</a>
+								</li><li><a href="/manage/right/">사원 권한 관리</a>
+								</li><li><a href="/manage/setting/department/">시스템 설정</a></li>
+							</ul>
+						</li>
+						
+						<li class=""><a href="#contact">통계 시스템</a></li>
+						<li class=""><a href="#contact">사내 정보 시스템</a></li>
+					</ul>
+				</nav>
+			</div>
+		</header>
+	</div>

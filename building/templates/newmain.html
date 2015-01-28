@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<!-- start: Meta -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Yewoo Housing Management System</title>
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: CSS -->
+	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+	<link type="text/css" href="{{ STATIC_URL }}bootstrap/css/daterange.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}bootstrap/css/main.css" rel="stylesheet" media="screen">
+	<link href="{{ STATIC_URL }}bootstrap/fonts/font-awesome.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}bootstrap/js/datepicker/ui.css" rel="stylesheet">
+	<!--<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet">-->
+	<!--<link href="{{ STATIC_URL }}css/datepicker.css" rel="stylesheet">-->
+	
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet">
+
+	<!--
+	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+	<link id="base-style" href="{{ STATIC_URL }}bootstrap/css/style.css" rel="stylesheet">
+	<link id="base-style-responsive" href="{{ STATIC_URL }}bootstrap/css/style-responsive.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}bootstrap/css/datepicker.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet">
+	-->
+	<!-- end: CSS -->
+
+	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	[endif]-->
+
+	<!-- start: Favicon -->
+	<!--<link rel="shortcut icon" href="img/favicon.ico">-->
+	<!-- end: Favicon -->
+	
+	<style>
+    body {
+      /*padding-bottom: 40px;
+      font-size : 0.9em;*/
+      font-family : 'Malgun Gothic' !important;
+    }
+    .sidebar-nav {
+      padding: 9px 0;
+    }
+
+/*
+    @media (max-width: 980px) {
+      .navbar-text.pull-right {
+        float: none;
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+    }
+	*/
+	</style>
+		
+</head>
+
+<body>
+    <!-- start:Header --!>
+    {% include "header.html" with menu="" %}
+    <!-- end:Header --!>
+
+    <div class="container-fluid" style="padding: 0px 20px 0px 20px; margin-top:10px">
+		<div class="col-md-2" style="padding-left:0px">
+		   {% include "sidebar.html" with side_menu="home" %}
+		</div>
+		<div class="col-md-10" style="padding-right:0px">
+			<h2>게시판 알림 영역</h2>
+			<p>이곳은 게시판 알림 영역입니다.</p>
+		</div>
+	</div>
+
+
+	<!-- start: JavaScript-->
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/sparkline.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/tiny-scrollbar.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/moment.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/daterangepicker.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom-index.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/datepicker/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.datepicker-ko.js"></script>
+	
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+	<!--
+	<script src="{{ STATIC_URL }}bootstrap/js/flot/jquery.flot.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/flot/jquery.flot.time.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/flot/jquery.flot.selection.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/flot/jquery.flot.resize.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/flot/jquery.flot.tooltip.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/flot/flot.excanvas.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/flot/custom/combine-chart.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery-1.9.1.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery-migrate-1.0.0.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery-ui-1.10.0.custom.min.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+
+	<script src='{{ STATIC_URL }}bootstrap/js/fullcalendar.min.js'></script>
+
+	<script src='{{ STATIC_URL }}bootstrap/js/jquery.dataTables.min.js'></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/excanvas.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.flot.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.flot.pie.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.flot.stack.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.flot.resize.min.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.chosen.min.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uniform.min.js"></script>
+	
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cleditor.min.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.noty.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.elfinder.min.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.raty.min.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.iphone.toggle.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.gritter.min.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.imagesloaded.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.masonry.min.js"></script>
+
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	-->
+	<script src="{{ STATIC_URL }}ejs/ejs.js"></script>
+	<script src="{{ STATIC_URL }}ejs/ejs_production.js"></script>
+	<script src="{{ STATIC_URL }}ejs/view.js"></script>
+	<script src="{{ STATIC_URL }}js/common.js"></script>
+	
+	<script type="text/javascript" language="JavaScript">
+		$(document).ready(function(){
+			// 초기 빌딩 수 알아두기
+			numOfBuildings = Number({{ numbuilding }});
+
+			// show sidebar
+			show_sidebar();
+			$("#side-datepicker").datepicker();
+			$("#side-datepicker2").datepicker();
+			$("#side-datepicker3").datepicker();
+		});			
+	</script>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

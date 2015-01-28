@@ -1,0 +1,178 @@
+<div class="sidebar-nav" style="padding:0px">
+	<div style="font-size:12px; color:#000000; margin:0px 0px 5px 0px">
+		최근 접속일자 {{ user.last_login|date:"Y.m.d H:i:s" }}
+	</div>
+	<div class="panel panel-default no-margin">
+		<div class="panel-body" style="padding: 5px">
+			<ul class="nav nav-tabs" id="tabmenu" style="margin:0px 0px 5px 0px;">
+				{% if side_menu == "home" %}
+				<li class="active" style="width:33.3%; font-size:12px;" onclick="$(location).attr('href','/newmain/')">
+					<a href="#home_tab" data-toggle="tab" data-original-title="">홈</a>
+				</li>
+				{% else %}
+				<li style="width:33.3%; font-size:12px;" onclick="$(location).attr('href','/newmain/')">
+					<a href="#home_tab" data-toggle="tab" data-original-title="">홈</a>
+				</li>
+				{% endif %}
+				{% if side_menu == "private" %}
+				<li class="active" style="width:33.3%; font-size:12px;">
+					<a href="#private_tab" data-toggle="tab" data-original-title="">개인함</a>
+				</li>
+				{% else %}
+				<li style="width:33.3%; font-size:12px;">
+					<a href="#private_tab" data-toggle="tab" data-original-title="">개인함</a>
+				</li>
+				{% endif %}
+				{% if side_menu == "department" %}
+				<li class="active" style="width:33.4%; font-size:12px;">
+					<a href="#department_tab" data-toggle="tab" data-original-title="">부서함</a>
+				</li>
+				{% else %}
+				<li style="width:33.4%; font-size:12px;">
+					<a href="#department_tab" data-toggle="tab" data-original-title="">부서함</a>
+				</li>
+				{% endif %}
+			</ul>
+
+    <div id="mytabcontent" class="tab-content">
+    	<!-- 1. 홈 탭 -->	
+        {% if side_menu == "home" %}
+    	<div class="tab-pane active" id="home_tab">
+        {% else %}
+    	<div class="tab-pane" id="home_tab">
+        {% endif %}
+			<div class="list-group no-margin">
+				<a href="#" class="list-group-item" data-original-title="" style="font-size:13px">{% now "Y.m.d D" %}</a>
+			</div>
+			<div id="side-datepicker" style="margin:3px 1px 3px 1px"></div>
+			<div class="list-group no-margin">
+				<a href="#" class="list-group-item" data-original-title="" style="font-size:13px">회사 일정</a>
+			</div>
+    	</div>
+    	<!-- 2. 개인함 탭 -->	
+        {% if side_menu == "private" %}
+    	<div class="tab-pane active" id="private_tab">
+        {% else %}
+    	<div class="tab-pane" id="private_tab">
+        {% endif %}
+				<div class="list-group no-margin">
+					<table class="table table-condensed table-hover" style="border:0px; margin:0px 0px 0px 0px">
+						<tr>
+							<td style="padding:0px"><a href="#" class="list-group-item sidebar-one" data-original-title="">[안 읽은 글]</a></td>
+							<td style="padding:0px"><a href="#" class="list-group-item sidebar-one" data-original-title="">[내 게시물]</a></td>
+						</tr>
+					</table>
+					<a href="#" class="list-group-item sidebar-one" data-original-title="">[업무 게시글 쓰기]</a>
+					<a href="#" class="list-group-item sidebar-one" data-original-title="">[통합 게시판]</a>
+					<a href="#" onclick="sidebar_hide4(this); return false;" class="list-group-item sidebar-one" data-original-title="">▼ [내 정보 관리]</a>
+					<a href="/myprofile/" class="list-group-item sidebar-two" data-original-title="" style="display:none">내 프로필 관리하기</a>
+					<a href="#" class="list-group-item sidebar-two" data-original-title="" style="display:none">내 근태 이력 보기</a>
+					<a href="#" class="list-group-item sidebar-two" data-original-title="" style="display:none">내 업무 평가 보기</a>
+					<a href="#" class="list-group-item sidebar-two" data-original-title="" style="display:none">내 로그인 정보 보기</a>
+					<a href="#" class="list-group-item sidebar-one" data-original-title="">[내 일정 관리]</a>
+				</div>
+                <div id="side-datepicker2" style="margin:3px 1px 3px 1px"></div>
+    	</div>
+    
+    	<!-- 3. 부서함 탭 -->
+        {% if side_menu == "department" %}
+    	<div class="tab-pane active" id="department_tab">
+        {% else %}
+    	<div class="tab-pane" id="department_tab">
+        {% endif %}
+				<div class="list-group no-margin">
+					<a href="#" class="list-group-item sidebar-one" onclick="sidebar_hide3(this); return false;">▼ [건물 관리 시스템]</a>
+					{% if perms.buildingApp.building_register %}
+					<a href="/building/register/" class="list-group-item sidebar-two" style="display:none">건물 정보 등록</a>
+					{% else %}
+					<a href="/building/register/" class="list-group-item sidebar-two noperm" style="display:none">건물 정보 등록</a>
+					{% endif %}
+					{% if perms.buildingApp.building_search_building %}
+					<a href="/building/search/building/" class="list-group-item sidebar-two" style="display:none">등록 건물 정보 확인</a>
+					{% else %}
+					<a href="/building/search/building/" class="list-group-item sidebar-two noperm" style="display:none">등록 건물 정보 확인</a>
+					{% endif %}
+					{% if perms.buildingApp.building_search_room %}
+					<a href="/building/search/rooms/" class="list-group-item sidebar-two" style="display:none">등록 호수 정보 확인</a>
+					{% else %}
+					<a href="/building/search/rooms/" class="list-group-item sidebar-two noperm" style="display:none">등록 호수 정보 확인</a>
+					{% endif %}
+
+					<a href="#" class="list-group-item sidebar-one" onclick="sidebar_hide3(this); return false;">▼ [입주자 관리 시스템]</a>
+					{% if perms.buildingApp.resident_show %}
+					<a href="/resident/show/" class="list-group-item sidebar-two" style="display:none">입주자 정보 확인(목록)</a>
+					{% else %}
+					<a href="/resident/show/" class="list-group-item sidebar-two noperm" style="display:none">입주자 정보 확인(목록)</a>
+					{% endif %}
+					{% if perms.buildingApp.resident_info %}
+					<a href="/resident/info/" class="list-group-item sidebar-two" style="display:none">입주자 정보 입력(개별)</a>
+					{% else %}
+					<a href="/resident/info/" class="list-group-item sidebar-two noperm" style="display:none">입주자 정보 입력(개별)</a>
+					{% endif %}
+					{% if perms.buildingApp.resident_infofile %}
+					<a href="/resident/infoFile/" class="list-group-item sidebar-two" style="display:none">입주자 정보 입력(파일)</a>
+					{% else %}
+					<a href="/resident/infoFile/" class="list-group-item sidebar-two noperm" style="display:none">입주자 정보 입력(파일)</a>
+					{% endif %}
+
+					<a href="#" class="list-group-item sidebar-one" onclick="sidebar_hide5(this); return false;">▼ [통합 내역 관리 시스템]</a>
+					{% if perms.buildingApp.lease_show %}
+					<a href="/lease/show/lease/" class="list-group-item sidebar-two" style="display:none">통합 내력 관리(확인)</a>
+					{% else %}
+					<a href="/lease/show/lease/" class="list-group-item sidebar-two noperm" style="display:none">통합 내역 관리(확인)</a>
+					{% endif %}
+					{% if perms.buildingApp.lease_input %}
+					<a href="/lease/input/check/" class="list-group-item sidebar-two" style="display:none">고지 내역 관리(입력)</a>
+					{% else %}
+					<a href="/lease/input/check/" class="list-group-item sidebar-two noperm" style="display:none">고지 내역 관리(입력)</a>
+					{% endif %}
+					{% if perms.buildingApp.lease_payment %}
+					<a href="/lease/payment/" class="list-group-item sidebar-two" style="display:none">납부 내역 관리(입력)</a>
+					{% else %}
+					<a href="/lease/payment/" class="list-group-item sidebar-two noperm" style="display:none">납부 내역 관리(입력)</a>
+					{% endif %}
+					{% if perms.buildingApp.lease_bill %}
+					<a href="/lease/bill/" class="list-group-item sidebar-two" style="display:none">표준 고지서 공지 입력</a>
+					{% else %}
+					<a href="/lease/bill/" class="list-group-item sidebar-two noperm" style="display:none">표준 고지서 공지 입력</a>
+					{% endif %}
+					{% if perms.buildingApp.lease_leave %}
+					<a href="/lease/leave/" class="list-group-item sidebar-two" style="display:none">퇴거 정산서 관리(입력/확인)</a>
+					{% else %}
+					<a href="/lease/leave/" class="list-group-item sidebar-two noperm" style="display:none">퇴거 정산서 관리(입력/확인)</a>
+					{% endif %}
+
+					<a href="#" class="list-group-item sidebar-one" onclick="sidebar_hide4(this); return false;">▼ [관리자 시스템]</a>
+					{% if perms.buildingApp.manage_activate %}
+					<a href="/manage/activate/" class="list-group-item sidebar-two" style="display:none">사원 승인 관리</a>
+					{% else %}
+					<a href="/manage/activate/" class="list-group-item sidebar-two noperm" style="display:none">사원 승인 관리</a>
+					{% endif %}
+					{% if perms.buildingApp.manage_accountinfo %}
+					<a href="/manage/accountinfo/" class="list-group-item sidebar-two" style="display:none">사원 정보 관리</a>
+					{% else %}
+					<a href="/manage/accountinfo/" class="list-group-item sidebar-two noperm" style="display:none">사원 정보 관리</a>
+					{% endif %}
+					{% if perms.buildingApp.manage_right %}
+					<a href="/manage/right/" class="list-group-item sidebar-two" style="display:none">사원 권한 관리</a>
+					{% else %}
+					<a href="/manage/right/" class="list-group-item sidebar-two noperm" style="display:none">사원 권한 관리</a>
+					{% endif %}
+					{% if perms.buildingApp.manage_setting %}
+					<a href="/manage/setting/department/" class="list-group-item sidebar-two" style="display:none">시스템 설정</a>
+					{% else %}
+					<a href="/manage/setting/department/" class="list-group-item sidebar-two noperm" style="display:none">시스템 설정</a>
+					{% endif %}
+
+					<a href="#" class="list-group-item sidebar-one">[사내 정보 시스템]</a>
+					<a href="#" class="list-group-item sidebar-one">[통계 시스템]</a>
+				</div>
+                <div id="side-datepicker3" style="margin:3px 1px 3px 1px"></div>
+            </ul>
+	    </div>
+    </div>
+
+		</div>
+	</div>
+
+</div>

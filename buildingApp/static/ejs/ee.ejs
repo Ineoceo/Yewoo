@@ -1,0 +1,42 @@
+<% for (var i = 0; i < data.length; i++) { %>
+<tr class="floor_under_over">
+	<td colspan="2" style="text-align:center"><%= data[i].floor_ko %>층</td>
+	<td colspan="2" style="text-align:center">
+		<select class="selOp margin0 form-control input-sm" id="numRoom_<%= data[i].floor %>" style="">
+			<option value="0">없음</option>
+		<% for (var j = 1; j <= 20; j++) { %>
+			<option value="<%= j %>"><%= j %>개</option>
+		<% } %>
+		</select>
+	</td>
+	<td colspan="4" style="text-align:center">
+		<input id="s_room_<%= data[i].floor %>" class="margin0 form-horizontal input-sm" type="text" value="없음" style="width:100px; text-align:center" disabled />
+		<input id="e_room_<%= data[i].floor %>" class="margin0 form-horizontal input-sm" type="text" value="없음" style="width:100px; text-align:center" disabled />
+	</td>
+	<td colspan="2" style="text-align:center">
+		임대 <input id="store_<%= data[i].floor %>" class="storeCheck" type="checkbox" <%= data[i].b_d %> />
+	</td>
+	<td colspan="2" style="text-align:center">
+		<select class="selOp_store margin0 form-control input-sm" id="storeNumRoom_<%= data[i].floor %>" style="" disabled>
+			<option value="0">없음</option>
+		<% for (var j = 1; j <= 20; j++) { %>
+			<option value="<%= j %>"><%= j %>개</option>
+		<% } %>
+		</select>
+	</td>
+	<td colspan="4" style="text-align:center">
+		<input id="storeNames_<%= data[i].floor %>" class="margin0 form-control input-sm" type="text" disabled />
+	</td>
+	<td colspan="2" style="text-align:center">
+		주차 <input id="parking_<%= data[i].floor %>" class="parkingCheck" type="checkbox" />
+	</td>
+	<td colspan="2" style="text-align:center">
+		<select class="selOp_parking margin0 form-control input-sm" id="parkingNum_<%= data[i].floor %>" style="" disabled>
+			<option value="0">없음</option>
+		<% for (var j = 1; j <= 20; j++) { %>
+			<option value="<%= j %>"><%= j %>면</option>
+		<% } %>
+		</select>
+	</td>
+</tr>
+<% } %>

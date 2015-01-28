@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<!-- start: Meta -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Yewoo Housing Management System</title>
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: CSS -->
+	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet" media="all">
+	<link type="text/css" href="{{ STATIC_URL }}bootstrap/css/daterange.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}bootstrap/css/main.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}bootstrap/fonts/font-awesome.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet" media="all">
+	<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet" media="all">
+	<!-- end: CSS -->
+
+	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	[endif]-->
+
+	<!-- start: Favicon -->
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<!-- end: Favicon -->
+	
+	<style>
+    table {
+    	table-layout: fixed;
+    }
+    table th, table td {
+    	overflow: hidden;
+    }
+    .must {
+    	color: red;
+    	float: left;
+		margin-right: 10px;
+    }
+    .optional {
+    	color: black;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .margin0 {
+    	margin-left: 0px !important;
+    	margin-right: 0px !important;
+    	margin-top: 0px !important;
+    	margin-bottom: 0px !important;
+	}
+	.width4 {
+		width: 95px;
+	}
+	.width3 {
+		width: 80px;
+	}
+	.width2 {
+		width: 70px;
+	}
+	select {
+		font-family : 'Malgun Gothic' !important;
+	}
+    body {
+		font-family : 'Malgun Gothic' !important;
+	}
+	input {
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-webkit-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-ms-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-input {
+		margin-bottom:0px !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+    .table-center td{
+        text-align:center;
+        vertical-align:middle;
+    }
+	#side-datepicker .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker2 .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker3 .ui-datepicker {
+		width:auto;
+	}
+	</style>
+		
+</head>
+
+<body>
+    <!-- start:Header --!>
+    {% include "header.html" with menu="manage" %}
+    <!-- end:Header --!>
+	<div class="container-fluid" style="padding: 0px 20px 0px 20px; margin-top:10px; margin-bottom:40px">
+		<div class="col-md-2" style="padding-left:0px">
+          {% include "sidebar.html" with side_menu="department" %}
+        </div>
+			
+		<!-- start: Content -->	
+		<div id="content" class="col-md-10" style="padding-right:0px; font-size:1.1em">
+
+			<div class="row-fluid" style="margin-bottom:0px">
+				<div class="panel panel-grey col-md-12" style="margin: 0px; padding: 0px">
+					<div class="panel-body" style="padding:0px">
+						<div class="btn-group" data-toggle="buttons">
+							<label class="btn btn-primary">
+								<input type="checkbox" onclick="moveMenu('/manage/activate/');">1. 사원 승인 관리
+							</label>
+							<label class="btn btn-primary">
+								<input type="checkbox" onclick="moveMenu('/manage/accountinfo/');">2. 사원 정보 관리
+							</label>
+							<label class="btn btn-primary active">
+								<input type="checkbox" onclick="moveMenu('/manage/right/');">3. 사원 권한 관리
+							</label>
+							<label class="btn btn-primary">
+								<input type="checkbox" onclick="moveMenu('/manage/setting/department/');">4. 시스템 설정
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- breadcrumb -->
+			<div class="col-md-12" style="padding:0px; margin-bottom:10px">
+				<ol class="breadcrumb no-margin">
+					<li><a href="#">관리자 시스템</a><!--<span class="divider">></span>--></li>
+					<li class="active">사원 권한 관리</li>
+				</ol>
+			</div>
+
+			<div class="row-fluid">
+				<div class="panel panel-default col-md-12" style="margin:0px; padding:0px">
+					<div class="panel-heading clearfix">
+						<h3 class="panel-title"><strong>사원 목록 현황</strong></h3>
+					</div>
+					<div class="panel-subheading" style="padding:5px 0px 5px 5px">
+						<span style="margin-right:20px"><strong>전체 사원 현황</strong> <font color="red">{{ users|length }}</font>건</span>
+						<span id="labelall" class="label label-info" onclick="filter_0403('all');">전체</span>
+						<span id="label0" class="label label-info" onclick="filter_0403('0');">ㄱ</span>
+						<span id="label1" class="label label-info" onclick="filter_0403('1');">ㄴ</span>
+						<span id="label2" class="label label-info" onclick="filter_0403('2');">ㄷ</span>
+						<span id="label3" class="label label-info" onclick="filter_0403('3');">ㄹ</span>
+						<span id="label4" class="label label-info" onclick="filter_0403('4');">ㅁ</span>
+						<span id="label5" class="label label-info" onclick="filter_0403('5');">ㅂ</span>
+						<span id="label6" class="label label-info" onclick="filter_0403('6');">ㅅ</span>
+						<span id="label7" class="label label-info" onclick="filter_0403('7');">ㅇ</span>
+						<span id="label8" class="label label-info" onclick="filter_0403('8');">ㅈ</span>
+						<span id="label9" class="label label-info" onclick="filter_0403('9');">ㅊ</span>
+						<span id="label10" class="label label-info" onclick="filter_0403('10');">ㅋ</span>
+						<span id="label11" class="label label-info" onclick="filter_0403('11');">ㅌ</span>
+						<span id="label12" class="label label-info" onclick="filter_0403('12');">ㅍ</span>
+						<span id="label13" class="label label-info" onclick="filter_0403('13');">ㅎ</span>
+						<span id="labeletc" class="label label-info" onclick="filter_0403('etc');">기타</span>
+						<span id="labelwork" class="label label-info" onclick="filter_0403('work');">재직</span>
+						<span id="labelexit" class="label label-info" onclick="filter_0403('exit');">기타</span>
+					</div>
+					<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0; font-size : 0.95em">
+						<table class="table table-bordered table-condensed table-center no-margin" style="margin-bottom:0px;">
+							<tr style="">
+								<td width="5%"><input type="checkbox" disabled/></td>
+								<td width="8%">이름</td>
+								<td width="8%">사번</td>
+								<td width="8%">부서</td>
+								<td width="8%">직급</td>
+								<td width="0%" style="display:none;">재직 현황</td>
+								<td width="8%">시스템 권한</td>
+								<td width="45%">시스템 권한 목록</td>
+								<td width="10%">권한 부여하기</td>
+							</tr>
+							{% for user in users %}
+							<tr class="datas">
+								<td><input type="checkbox" disabled/></td>
+								{% if user.hasimage %}
+								<td>{{ user.userprofile.name }}<i class="icon-user" onmouseover="$('#img{{user.id}}').attr('src','/static/person_img/{{user.imgfile}}');" onmouseout="$('#img{{user.id}}').attr('src','/static/person_img/trans.png');"></i><img width="auto" height="auto" src="/static/person_img/trans.png" id="img{{user.id}}" style="zindex: 100; position: absolute;max-width:100px;"/></td>
+								{% else %}
+								<td>{{ user.userprofile.name }}</td>
+								{% endif %}
+								<td>{% if user.userprofile.companynumber %}{{ user.userprofile.companynumber }}{% else %}{% endif %}</td>
+								<td>{{ user.userprofile.department }}</td>
+								<td>{{ user.userprofile.position }}</td>
+								<td style="display:none;">{% if user.userprofile.status == 1 %}재직{% elif user.userprofile.status == 2 %}퇴사{% else %}알수없음{% endif %}</td>
+								<td>총 {{ user.permcount }}개</td>
+								<td>{{ user.permstr }}</td>
+								<td><button type="button" class="btn btn-xs btn-primary showdetail">보기▼</button></td>
+							</tr>
+							<tr class="datas_sub" style="display:none;">
+								<td colspan="9" style="text-align:left;">
+								<div style="padding:5px;">
+									<span><strong>시스템 권한 부여 설정</strong> {{ user.permcount }}개 권한 부여중</span>
+									<hr style="margin-top:10px;margin-bottom:10px;">
+									<table class="table table-bordered table-condensed table-center no-margin borderless" style="margin-bottom:0px;background-color:transparent;">
+										<tr>
+											<td width="16%"><strong>전체 선택</strong></td>
+											<td width="16%"><strong>건물 관리 시스템</strong></td>
+											<td width="16%"><strong>입주자 관리 시스템</strong></td>
+											<td width="16%"><strong>시설 관리 시스템</strong></td>
+											<td width="16%"><strong>통합 내역 관리 시스템</strong></td>
+											<td width="16%"><strong>관리자 시스템</strong></td>
+										</tr>
+										<!--
+										<tr>
+											<td style="padding:0px;"><span height="100%" class="label" style="display:block;padding:7px 4px;">▽</span></td>
+											<td style="padding:0px;"><span height="100%" class="label" style="display:block;padding:7px 4px;">▽</span></td>
+											<td style="padding:0px;"><span height="100%" class="label" style="display:block;padding:7px 4px;">▽</span></td>
+											<td style="padding:0px;"><span height="100%" class="label" style="display:block;padding:7px 4px;">▽</span></td>
+											<td style="padding:0px;"><span height="100%" class="label" style="display:block;padding:7px 4px;">▽</span></td>
+											<td style="padding:0px;"><span height="100%" class="label" style="display:block;padding:7px 4px;">▽</span></td>
+										</tr>
+										-->
+										<tr>
+											<td></td>
+											<td>
+												<table class="table-center no-margin col-md-12" style="border: none;">
+													<tr style="border:none;">
+														<td style="border:none;" width="20%"><input id="check0_{{user.id}}" type="checkbox" {% if user.perm.0 %}checked{% endif %}/></td>
+														<td style="border:none;" width="80%">건물 정보 등록</td>
+													</tr>
+													<tr>
+														<td style="border:none;"><input id="check1_{{user.id}}" type="checkbox" {% if user.perm.1 %}checked{% endif %}/></td>
+														<td style="border:none;">등록 건물 정보 확인</td>
+													</tr>
+													<tr>
+														<td style="border:none;"><input id="check2_{{user.id}}" type="checkbox" {% if user.perm.2 %}checked{% endif %}/></td>
+														<td style="border:none;">등록 호수 정보 확인</td>
+													</tr>
+												</table>
+											</td>
+											<td>
+												<table class="table-center no-margin col-md-12" style="border: none;">
+													<tr style="border:none;">
+														<td style="border:none;" width="20%"><input id="check3_{{user.id}}" type="checkbox" {% if user.perm.3 %}checked{% endif %}/></td>
+														<td style="border:none;" width="80%">입주자 정보 확인(목록)</td>
+													</tr>
+													<tr>
+														<td style="border:none;"><input id="check4_{{user.id}}" type="checkbox" {% if user.perm.4 %}checked{% endif %}/></td>
+														<td style="border:none;">입주자 정보 입력(개별)</td>
+													</tr>
+													<tr>
+														<td style="border:none;"><input id="check5_{{user.id}}" type="checkbox" {% if user.perm.5 %}checked{% endif %}/></td>
+														<td style="border:none;">임주자 정보 입력(파일)</td>
+													</tr>
+												</table>
+											</td>
+											<td>
+											</td>
+											<td>
+												<table class="table-center no-margin col-md-12" style="border: none;">
+													<tr style="border:none;">
+														<td style="border:none;" width="20%"><input id="check6_{{user.id}}" type="checkbox" {% if user.perm.6 %}checked{% endif %}/></td>
+														<td style="border:none;" width="80%">통합 내역 관리(확인)</td>
+													</tr>
+													<tr>
+														<td style="border:none;"><input id="check7_{{user.id}}" type="checkbox" {% if user.perm.7 %}checked{% endif %}/></td>
+														<td style="border:none;">고지 내역 관리(입력)</td>
+													</tr>
+													<tr>
+														<td style="border:none;"><input id="check8_{{user.id}}" type="checkbox" {% if user.perm.8 %}checked{% endif %}/></td>
+														<td style="border:none;">납부 내역 관리(입력)</td>
+													</tr>
+													<tr>
+														<td style="border:none;"><input id="check13_{{user.id}}" type="checkbox" {% if user.perm.13 %}checked{% endif %}/></td>
+														<td style="border:none;">표준 고지서 공지 입력</td>
+													</tr>
+													<tr>
+														<td style="border:none;"><input id="check14_{{user.id}}" type="checkbox" {% if user.perm.14 %}checked{% endif %}/></td>
+														<td style="border:none;">퇴거 정산서 관리(입력/확인)</td>
+													</tr>
+												</table>
+											</td>
+											<td>
+												<table class="table-center no-margin col-md-12" style="border: none;">
+													<tr style="border:none;">
+														<td style="border:none;" width="20%"><input id="check9_{{user.id}}" type="checkbox" {% if user.perm.9 %}checked{% endif %}/></td>
+														<td style="border:none;" width="80%">사원 승인 관리</td>
+													</tr>
+													<tr>
+														<td style="border:none;"><input id="check10_{{user.id}}" type="checkbox" {% if user.perm.10 %}checked{% endif %}/></td>
+														<td style="border:none;">사원 정보 관리</td>
+													</tr>
+													<tr>
+														<td style="border:none;"><input id="check11_{{user.id}}" type="checkbox" {% if user.perm.11 %}checked{% endif %}/></td>
+														<td style="border:none;">사원 권한 관리</td>
+													</tr>
+													<tr>
+														<td style="border:none;"><input id="check12_{{user.id}}" type="checkbox" {% if user.perm.12 %}checked{% endif %}/></td>
+														<td style="border:none;">시스템 설정</td>
+													</tr>
+												</table>
+											</td>
+										</tr>
+									</table>
+									<div style="text-align:center;">
+										<button type="button" class="btn btn-sm btn-primary" onclick="setperm({{ user.id }})" >설정</button>
+									</div>
+								</div>
+								</td>
+							</tr>
+							{% endfor %}
+						</table>
+					</div>
+				</div>
+			</div>
+			<!-- end: Content -->
+		</div>
+	</div>
+	
+
+	<!-- start: JavaScript-->
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/sparkline.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/tiny-scrollbar.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/moment.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/daterangepicker.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom-index.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/datepicker/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.datepicker-ko.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+
+	<script src="{{ STATIC_URL }}ejs/ejs.js"></script>
+	<script src="{{ STATIC_URL }}ejs/ejs_production.js"></script>
+	<script src="{{ STATIC_URL }}ejs/view.js"></script>
+
+	<script src="{{ STATIC_URL }}js/04_03_right.js"></script>
+	<script src="{{ STATIC_URL }}js/common.js"></script>
+	
+	<script type="text/javascript" language="JavaScript">
+		function moveMenu(url) {
+			location.href = url;
+		}
+		$(document).ready(function(){
+			// show sidebar
+			$('#tabmenu a').click(function(e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+			$("#side-datepicker").datepicker();
+			$("#side-datepicker2").datepicker();
+			$("#side-datepicker3").datepicker();
+
+			$('.showdetail').click(function() {
+				if ((this).parentNode.parentNode.nextSibling.nextSibling.style.display == 'none') {
+					(this).parentNode.parentNode.nextSibling.nextSibling.style.display = '';
+					(this).firstChild.data = "보기▲";
+				} else {
+					(this).parentNode.parentNode.nextSibling.nextSibling.style.display = 'none';
+					(this).firstChild.data = "보기▼";
+				}
+			});
+		});			
+	</script>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

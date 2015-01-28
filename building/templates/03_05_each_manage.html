@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<!-- start: Meta -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Yewoo Housing Management System</title>
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: CSS -->
+	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+	<link type="text/css" href="{{ STATIC_URL }}bootstrap/css/daterange.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}bootstrap/css/main.css" rel="stylesheet" media="screen">
+	<link href="{{ STATIC_URL }}bootstrap/fonts/font-awesome.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet">
+	<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet">
+	<!-- end: CSS -->
+
+	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	[endif]-->
+
+	<!-- start: Favicon -->
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<!-- end: Favicon -->
+	
+	<style>
+    table {
+    	table-layout: fixed;
+    }
+    table th, table td {
+    	overflow: hidden;
+        white-space: nowrap;
+    }
+    .must {
+    	color: red;
+    	float: left;
+		margin-right: 10px;
+    }
+    .optional {
+    	color: black;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .margin0 {
+    	margin-left: 0px !important;
+    	margin-right: 0px !important;
+    	margin-top: 0px !important;
+    	margin-bottom: 0px !important;
+	}
+	.width4 {
+		width: 95px;
+	}
+	.width3 {
+		width: 80px;
+	}
+	.width2 {
+		width: 70px;
+	}
+	select {
+		font-family : 'Malgun Gothic' !important;
+	}
+    body {
+		font-family : 'Malgun Gothic' !important;
+	}
+	input {
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-webkit-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-ms-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-input {
+		margin-bottom:0px !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+    .table-center td{
+        text-align:center;
+        vertical-align:middle;
+    }
+	.fontmini {
+		text-align : center;
+		font-size : 0.95em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	#side-datepicker .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker2 .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker3 .ui-datepicker {
+		width:auto;
+	}
+	</style>
+		
+</head>
+
+<body>
+    <!-- start:Header --!>
+    {% include "header.html" with menu="lease" %}
+    <!-- end:Header --!>
+    <div class="container-fluid" style="padding: 0px 20px 0px 20px; margin-top:10px; margin-bottom:40px">
+		<div class="col-md-2" style="padding-left:0px">
+          {% include "sidebar.html" with side_menu="department" %}
+        </div>
+			
+		<!-- start: Content -->	
+		<div id="content" class="col-md-10" style="padding-right:0px; font-size:1.1em">
+			<!-- breadcrumb -->
+			<div class="col-md-12" style="padding:0px; margin:10px 0px 10px 0px">
+				<ol class="breadcrumb no-margin">
+					<li><a href="#">통합 내역 관리 시스템</a><span class="divider">></span></li>
+					<li><a href="#">고지서 안내 관리</a><!--<span class="divider">></span>--></li>
+					<li class="active">개별 안내</li>
+				</ol>
+			</div>
+			
+			<div class="row-fluid" style="margin-bottom:0px">
+				<div class="panel panel-grey col-md-12" style="margin: 0px; padding: 0px">
+					<div class="panel-body" style="padding:0px">
+						<div class="btn-group" data-toggle="buttons">
+							<label class="btn btn-primary">
+								<input type="checkbox" onclick="moveMenu('/lease/bill/each/{{ bid }}/{{ roomid }}/input/{{ year }}/{{ month }}/');">1. 개별 안내 입력하기
+							</label>
+							<label class="btn btn-primary">
+								<input type="checkbox" onclick="moveMenu('/lease/bill/each/{{ bid }}/{{ roomid }}/look/{{ year }}/{{ month }}/{{ year }}');">2. 개별 안내 내역 보기
+							</label>
+							<label class="btn btn-primary active">
+								<input type="checkbox" onclick="moveMenu('/lease/bill/each/{{ bid }}/{{ roomid }}/manage/{{ year }}/{{ month }}/{{ year }}');">3. 개별 안내 내역 관리하기
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="row-fluid">
+				<div class="panel panel-default col-md-12" style="margin:10px 0px 0px 0px; padding: 0px">
+					<div class="panel-heading clearfix" style="padding:10px 0px 10px 10px">
+						<h3 class="panel-title"><strong>3. 개별 안내 내역 관리하기</strong></h3>
+					</div>
+				</div>
+
+				<div class="col-md-12" style="margin:10px 0px 0px 0px; padding:0px">
+					<div class="form-inline" style="margin-bottom:5px">
+						<span>안내 회차</span>
+						<select id="search_year" class="margin0 form-control input-sm" style="width:130px">
+							<option value="2012" {% if searchYear == 2012 %}selected{% endif %}>2012</option>
+							<option value="2013" {% if searchYear == 2013 %}selected{% endif %}>2013</option>
+							<option value="2014" {% if searchYear == 2014 %}selected{% endif %}>2014</option>
+							<option value="2015" {% if searchYear == 2015 %}selected{% endif %}>2015</option>
+						</select>
+						<button type="button" class="btn btn-sm btn-primary" onclick="searchYear('{{ bid }}', '{{ roomid }}', '{{ year }}', '{{ month }}');">조회</button>
+						<button type="button" class="btn btn-sm btn-default" onclick="">초기화</button>
+					</div>
+				</div>
+
+				<div class="panel panel-default col-md-12" style="margin:10px 0px 0px 0px; padding: 0px">
+					<div class="panel-heading clearfix" style="padding:10px 0px 10px 10px">
+						<h3 class="panel-title"><strong>입주자 정보 ▼</strong></h3>
+					</div>
+					<div class="panel-body table-resonsive" style="margin: 0px; padding: 0px; border:0;">
+						<table class="table table-bordered table-condensed no-margin" style="margin-bottom:0px">
+							<tr>
+								<th width="15%" style="text-align:center">건물명</th>
+								<th width="8%" style="text-align:center">호실</th>
+								<th width="8%" style="text-align:center">재실여부</th>
+								<th width="12%" style="text-align:center">입주자</th>
+								<th width="5%" style="text-align:center">성별</th>
+								<th width="8%" style="text-align:center">회차</th>
+								<th width="15%" style="text-align:center">연락처 1</th>
+								<th width="15%" style="text-align:center">연락처 2</th>
+								<th width="14%" style="text-align:center">이메일</th>
+							</tr>
+							<tr>
+								<td style="text-align:center">{{ bname }}</td>
+								<td style="text-align:center">{{ roomnum }}</td>
+								<td style="text-align:center">{{ isOccupied }}</td>
+								<td style="text-align:center">{{ residentName }}</td>
+								<td style="text-align:center">{{ residentGender }}</td>
+								<td style="text-align:center">{{ year }}/{{ month }}</td>
+								<td style="text-align:center"></td>
+								<td style="text-align:center"></td>
+								<td style="text-align:center"></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+
+				<div class="panel panel-default col-md-12" style="margin:10px 0px 0px 0px; padding: 0px">
+					<div class="panel-heading clearfix" style="padding:10px 0px 10px 10px">
+						<h3 class="panel-title"><strong>개별 안내 내역 관리하기</strong></h3>
+					</div>
+					<div class="panel-body table-responsive" style="margin:0px; padding:0px;">
+						{% for ym in yearmonth %}
+						<div class="panel panel-default" style="margin:8px 5px 8px 5px; padding:0px">
+							<div class="panel-body table-responsive" style="margin:0px; padding:0px">
+								<table class="table table-bordered table-condensed no-margin">
+										<tr style="">
+											<th width="6%" style="text-align:center; vertical-align:middle">건물명</th>
+											<th width="10%"><input type="text" class="margin0 form-control input-sm" style="text-align:center" value="{{ bname }}" disabled /></th>
+											<th width="6%" style="text-align:center; vertical-align:middle">호실</th>
+											<th width="8%"><input type="text" class="margin0 form-control input-sm" style="text-align:center" value="{{ roomnum }}" disabled /></th>
+											<th width="8%" style="text-align:center; vertical-align:middle">안내회차</th>
+											<th width="10%"><input type="text" class="margin0 form-control input-sm" style="text-align:center" value="{{ ym.yymm }}" disabled /></th>
+											<th width="46%" style="vertical-align:middle">총 <font style="color:red">{{ ym.cnt }}</font>개의 개별 안내 사항이 있습니다.</th>
+											<th width="6%"><button type="button" class="btn btn-sm btn-primary" onclick="modify('{{ ym.yymm_ }}');">입력/수정</button></th>
+										</tr>
+										<tr>
+											<td colspan="8" style="background-color:#edf5fa; text-align:center">개별 안내 내역보기</td>
+										</tr>
+									</table>
+									<table id="contentTable_{{ ym.yymm_ }}" class="table table-bordered table-condensed" style="margin-bottom:0px">
+										{% for d in ym.data %}
+										<tr class="item_{{ d.id }}">
+											<td width="8%" style="text-align:center">개별안내</td>
+											<td width="4%" style="text-align:center">{{ d.number }}</td>
+											<td width="8%" style="text-align:center">입력담당자</td>
+											<td width="8%" style="text-align:center" class="name_{{ d.id }} modify_{{ d.id }}">{{ d.manager }}</td>
+											<td width="8%"><input type="text" id="inputDate_{{ d.id }}" class="margin0 form-control input-sm datepicker date_{{ d.id }} modify_{{ d.id }}" value="{{ d.date }}" disabled onchange="adjustDate('inputDate_{{ d.id }}');" /></td>
+											<td width="5%" style="text-align:center">분류</td>
+											<td width="10%">
+												<select id="sel_item_{{ d.id }}" class="margin0 form-control input-sm fontmini modify_{{ d.id }}" disabled>
+													<option value="1" {% if d.category == 1 %}selected{% endif %}>기타사항</option>
+												</select>
+											</td>
+											<td width="37%"><input type="text" class="margin0 form-control input-sm memo_{{ d.id }} modify_{{ d.id }}" value="{{ d.memo }}" disabled /></td>
+											<td width="12%" style="text-align:center">
+												<div class="not_modifying_{{ ym.yymm_ }}"><strong>입력완료</strong></div>
+												<div class="modifying_{{ ym.yymm_ }} form-inline" style="display:none">
+													<button type="button" class="btn btn-sm btn-primary" onclick="modifyEach('{{ d.id }}');">수정</button>
+													<button type="button" class="btn btn-sm btn-danger" onclick="del('{{ d.id }}', '{{ ym.yymm_ }}');">삭제</button>
+												</div>
+											</td>
+										</tr>
+										{% endfor %}
+									</table>
+									<table class="table table-bordered table-condensed modifying_{{ ym.yymm_ }} no-margin" style="margin-bottom:0px; display:none">
+										<tr>
+											<td style="background-color:#edf5fa; text-align:center">개별 안내 추가하기</td>
+										</tr>
+									</table>
+									<table class="table table-bordered table-condensed modifying_{{ ym.yymm_ }}" style="margin-bottom:0px; display:none">
+										<tr>
+											<td width="3%"></td>
+											<td width="8%" style="text-align:center">개별안내</td>
+											<td width="4%" style="text-align:center"><div id="add_number_{{ ym.yymm_ }}"></div></td>
+											<td width="8%" style="text-align:center">입력담당자</td>
+											<td width="8%" style="text-align:center"><input id="add_name_{{ ym.yymm_ }}" type="text" class="margin0 form-control input-sm" placeholder="입력담당자" /></td>
+											<td width="8%"><input id="add_date_{{ ym.yymm_ }}" type="text" class="margin0 form-control input-sm datepicker dateinput fontmini" onchange="adjustDate('add_date_{{ ym.yymm_ }}');" placeholder="입력 날짜"/></td>
+											<td width="5%" style="text-align:center">분류</td>
+											<td width="10%">
+												<select id="add_category_{{ ym.yymm_ }}" class="margin0 form-control input-sm">
+													<option value="1">기타사항</option>
+												</select>
+											</td>
+											<td width="34%"><input id="add_memo_{{ ym.yymm_ }}" type="text" class="margin0 form-control input-sm" placeholder="내용" /></td>
+											<td width="12%" style="text-align:center"><button type="button" class="btn btn-sm btn-primary" onclick="addItem('{{ roomid }}', '{{ ym.cnt }}', '{{ ym.yymm_ }}');">추가</button></td>
+										</tr>
+										<tr>
+											<td colspan="11" style="text-align:center">
+												<div class="form-inline">
+													<button type="button" class="btn btn-sm btn-primary" onclick="cancel();">취소</button>
+													<button type="button" class="btn btn-sm btn-primary" onclick="done('{{ ym.yymm }}');">완료</button>
+												</div>
+											</td>
+										</tr>
+									</table>
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<!-- end: Content -->
+		</div>
+	</div>
+	
+	<input type="hidden" value="{{ csrf_token }}" />	
+
+
+
+
+
+	<!-- start: JavaScript-->
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/sparkline.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/tiny-scrollbar.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/moment.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/daterangepicker.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom-index.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/datepicker/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.datepicker-ko.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+
+	<script src="{{ STATIC_URL }}ejs/ejs.js"></script>
+	<script src="{{ STATIC_URL }}ejs/ejs_production.js"></script>
+	<script src="{{ STATIC_URL }}ejs/view.js"></script>
+	<script src="{{ STATIC_URL }}js/03_05_each_manage.js"></script>
+	<script src="{{ STATIC_URL }}js/common.js"></script>
+	
+	<script type="text/javascript" language="JavaScript">
+		function moveMenu(url) {
+			location.href = url;
+		}
+		$(document).ready(function(){
+			// show sideba
+			$('#tabmenu a').click(function(e) {
+				e.preventDefault();
+				$(this).tab('show');
+			});
+			$("#side-datepicker").datepicker();
+			$("#side-datepicker2").datepicker();
+			$("#side-datepicker3").datepicker();
+			$('.datepicker').datepicker();
+			$('.datepicker').click(function() {
+				$(this).datepicker();
+			});
+
+			$('.showdetail').click(function() {
+				if ((this).parentNode.parentNode.nextSibling.nextSibling.style.display == 'none') {
+					(this).parentNode.parentNode.nextSibling.nextSibling.style.display = '';
+					(this).firstChild.data = "보기▲";
+				} else {
+					(this).parentNode.parentNode.nextSibling.nextSibling.style.display = 'none';
+					(this).firstChild.data = "보기▼";
+				}
+			});
+
+			ids = new Array();
+			ids = {{ data_id|safe }};
+			curBid = '{{ bid }}';
+			curRoomid = '{{ roomid }}';
+		});
+	</script>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

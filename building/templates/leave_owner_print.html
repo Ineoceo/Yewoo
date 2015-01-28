@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="ko" ng-app="yewooApp">
+<head>
+	<!-- start: Meta -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Yewoo Housing Management System</title>
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: CSS -->
+	<link id="bootstrap-style" href="{{ STATIC_URL }}print/bootstrap.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}print/bootstrap-responsive.min.css" rel="stylesheet">
+	<link id="base-style" href="{{ STATIC_URL }}print/style.css" rel="stylesheet">
+	<link id="base-style-responsive" href="{{ STATIC_URL }}print/style-responsive.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}css/print.css" rel="stylesheet" media="print">
+	<!-- end: CSS -->
+
+    <!-- start: angular scripts -->
+    <script src="{{ STATIC_URL }}underscorejs/underscore-min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.22/angular.js"></script>
+    <!--<script src="{{ STATIC_URL }}angularjs/angular.min.js"></script>-->
+	<script src="{{ STATIC_URL }}js/leave_owner_print.angular.js"></script>
+    <!-- end: angular scripts -->
+
+	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	[endif]-->
+
+	<!-- start: Favicon -->
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<!-- end: Favicon -->
+	
+	<style>
+    table {
+    	table-layout: fixed;
+    }
+    table th, table td {
+    	overflow: hidden;
+    }
+    .white {
+    	background-color: #ffffff;
+    }
+    .must {
+    	color: red;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .optional {
+    	color: black;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .margin0 {
+    	margin-left: 0px !important;
+    	margin-right: 0px !important;
+    	margin-top: 0px !important;
+		margin-bottom: 0px !important;
+	}
+	select {
+	}
+    body {
+		font-size : 0.77em;
+		line-height : 17px;
+	}
+	input {
+	}
+	::-webkit-input-placeholder {
+		font-size : 0.8em !important;
+	}
+	::-moz-placeholder {
+		font-size : 0.8em !important;
+	}
+	:-moz-placeholder {
+		font-size : 0.8em !important;
+	}
+	:-ms-input-placeholder {
+		font-size : 0.8em !important;
+	}
+	:-input {
+		margin-bottom:0px !important;
+	}
+
+
+    @page { size: A4 landscape; }
+	</style>
+		
+</head>
+
+<body id="leave" style="background: white; padding: 5px;" ng-controller="MainCtrl" class="owner dotum">
+    <!-- start:Header --!>
+    <!-- end:Header --!>
+	
+	{% load humanize %}	
+    <input type="hidden" id="print" value="{{ print }}" />
+    <input type="hidden" id="rid" value="{{ result.id }}" />
+    <input type="hidden" id="bid" value="{{ result.buildingName }}" />
+
+	<div class="container-fluid">
+        <table class="fullbox three-columns">
+            <tr>
+				<!-- first column -->
+				<td width="28%">
+					<!-- 임차인 -->
+					<div class="titlebox">임 차 인</div>
+					<table class="fullbox">
+						<tr class="bold">
+							<td width="33.33%" class="paddingSmallLeft">
+								<span class="textSubTitle" ng-bind="data.buildingName"></span>
+							</td>
+							<td width="33.33%" class="textCenter">
+								<span class="" ng-bind="data.roomNumber"></span>호
+							</td>
+							<td width="33.33%" class="textRight paddingSmallRight">
+								<span class="" ng-bind="data.name"></span>님
+							</td>
+						</tr>
+					<table>
+					<table class="fullbox table-content textBasic">
+						<colgroup>
+							<col width="30%"/>
+							<col width="5%"/>
+							<col width="65%"/>
+						</colgroup>
+						<tr style="line-height:20px; !important;">
+							<td class="bold paddingSmallLeft">임대기간</td>
+							<td class="textCenter bold">|</td>
+							<td class="" style="letter-spacing:-1px;">
+								<span ng-bind="data.rentStart | date:'yyyyMMdd'"></span> ~ <span ng-bind="data.rentEnd | date:'yyyyMMdd'"></span> (<span ng-bind="data.rentMethod"></span>제)
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="bold paddingLeft">임대일</td>
+							<td class="textRight" style="padding-right:10px"><span ng-bind="data.rentStart | date:'yyyy.MM.dd'"></span></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="bold paddingLeft">만료일</td>
+							<td class="textRight" style="padding-right:10px"><span ng-bind="data.rentEnd | date:'yyyy.MM.dd'"></span></td>
+						</tr>
+						<tr>
+							<td colspan="2" class="bold paddingLeft">퇴거일</td>
+							<td class="textRight" style="padding-right:10px"><span ng-bind="data.leaved | date:'yyyy.MM.dd'"></span></td>
+						</tr>
+						<tr>
+							<td colspan="3" class="paddingLeft" style="line-height:200%">
+								*퇴거사유 : <span ng-bind="data.leaveReason"></span>
+							</td>
+						</tr>
+						<tr class="graycell">
+							<td colspan="3" class="paddingLeft bold">임대 보증금 및 임대료</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="bold paddingLeft">임대 보증금</td>
+							<td class="textRight paddingRight"><span ng-bind="data.deposit | number:0"></span>원</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="bold paddingLeft">임대료</td>
+							<td class="textRight paddingRight"><span ng-bind="data.rent | number:0"></span>원</td>
+						</tr>
+					</table>
+					<br/>
+
+					<!-- 반환금 명세 -->
+					<div class="titlebox">
+						반환금 명세
+					</div>
+					<table class="fullbox" style="margin-top:8px; border-bottom:1px solid black; !important;">
+						<tr>
+							<td width="40%" style="line-height:110%">
+								퇴거시<br />반환받으신 금액은
+							</td>
+							<td width="60%" class="textRight textLarge paddingSmallRight lsSmall">
+								<span class="textLarge" ng-bind="data.returnMoney | number:0"></span>원
+							</td>
+						</tr>
+					</table>
+
+					<div class="bold paddingSmallLeft" style="margin-top:15px">
+						+ 총 반환금
+					</div>
+					<table class="fullbox table-content">
+						<colgroup>
+							<col width="30%"/>
+							<col width="25%"/>
+							<col width="45%"/>
+						</colgroup>
+						<tr>
+							<td colspan="2" class="bold paddingSmallLeft">보증금</td>
+							<td class="bold textRight paddingSmallRight">
+								<span ng-bind="data.deposit | number:0"></span>원
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="bold paddingLeft">미납 요금 및 공과금<br/>(추가금액 포함)</td>
+							<td class="textRight paddingSmallRight">
+								<span ng-bind="data.unpaid | number:0"></span>원
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="bold paddingLeft">시설 관리비</td>
+							<td class="textRight paddingSmallRight">
+								<span ng-bind="data.fee | number:0"></span>원
+							</td>
+						</tr>
+						<tr class="graycell">
+							<td colspan="2" class="bold paddingSmallLeft">총 금액</td>
+							<td class="bold textRight paddingSmallRight">
+								<span ng-bind="data.returnMoney | number:0"></span>원
+							</td>
+						</tr>
+						<tr class="lsSmall">
+							<td class="paddingLeft bold">입금계좌</td>
+							<td colspan="2" class="textRight paddingSmallRight"><span ng-bind="data.bank"></span> <span ng-bind="data.account"></span>&nbsp;&nbsp;예금주 : <span ng-bind="data.accountHolder"></span>
+							</td>
+						</tr>
+					</table>
+					<br/>
+
+					<!-- 퇴거 정산서 확인-->
+					<div class="titlebox">
+						퇴거 정산서 확인
+					</div>
+					<div class="bold paddingSmallLeft">
+						+ 임차인 확인 
+					</div>
+					<table class="fullbox contactbox">
+						<colgroup>
+							<col width="20%"/>
+							<col width="60%"/>
+							<col width="20%"/>
+						</colgroup>
+						<tr>
+							<td class="textCenter graycell">성&nbsp;&nbsp;&nbsp;&nbsp;명</td>
+							<td class="textCenter whitecell"><span ng-bind="resident.residentName"></span></td>
+							<td class="textCenter whitecell bold noborderright" rowspan="3">서명(인)</td>
+						</tr>
+						<tr>
+							<td class="textCenter graycell">주민번호</td>
+							<td class="textCenter whitecell"><span ng-bind="resident.residentRegNumber"></span></td>
+						</tr>
+						<tr>
+							<td class="textCenter graycell">연락처</td>
+							<td class="textCenter whitecell"><span ng-bind="resident.residentContactNumber1"></span></td>
+						</tr>
+					</table>
+					<div class="bold paddingSmallLeft" style="margin-top:10px">
+						+ 임대인 확인 
+					</div> 
+					<table class="fullbox contactbox">
+						<colgroup>
+							<col width="20%"/>
+							<col width="60%"/>
+							<col width="20%"/>
+						</colgroup>
+						<tr>
+							<td class="textCenter graycell">성&nbsp;&nbsp;&nbsp;&nbsp;명</td>
+							<td class="textCenter whitecell"><span ng-bind="resident.residentName"></span></td>
+							<td class="textCenter whitecell bold noborderright" rowspan="3">서명(인)</td>
+						</tr>
+						<tr>
+							<td class="textCenter graycell">주민번호</td>
+							<td class="textCenter whitecell"><span ng-bind="resident.residentRegNumber"></span></td>
+						</tr>
+						<tr>
+							<td class="textCenter graycell">연락처</td>
+							<td class="textCenter whitecell"><span ng-bind="resident.residentContactNumber1"></span></td>
+						</tr>
+					</table>
+					<br/>
+				</td>
+				<!-- end first column -->
+
+				<!-- second column -->
+				<td width="37%" height="17cm">
+					<div class="layout">
+						<div class="layout-fixed">
+							<div class="titlebox">상세 명세1/ 미납임대료 및 공과금</div>
+							<!-- 총 금액 table -->
+							<div class="bold paddingSmallLeft">
+								+ 총 금액
+							</div>
+							<table class="fullbox table-content">
+								<colgroup>
+									<col width="50%"/>
+									<col width="50%"/>
+								</colgroup>
+								<tr>
+									<td class="bold paddingSmallLeft">총 금액</td>
+									<td class="bold textRight paddingRight">
+										<span ng-bind="data.unpaid | number:0"></span>원
+									</td>
+								</tr>
+								<tr>
+									<td class="bold paddingLeft">미납 요금 및 공과금</td>
+									<td class="textRight paddingRight">
+										<span ng-bind="data.unpaidCollected| number:0"></span>원
+									</td>
+								</tr>
+								<tr>
+									<td class="bold paddingLeft">추가금액</td>
+									<td class="textRight paddingRight">
+										<span ng-bind="data.unpaidAdded| number:0"></span>원
+									</td>
+								</tr>
+							</table>
+							<!-- end 총 금액 table -->
+							<br />
+							<!-- 미납 내역 table -->
+							<div class="bold paddingSmallLeft">
+								+ 미납내역
+							</div>
+							<table class="fullbox table-content textCenter">
+								<tr class="bold itemcell">
+									<td width="18%" class="graycell">년도/월</td>
+									<td width="20%">납부금액</td>
+									<td width="20%">입금액</td>
+									<td width="21%">입금일</td>
+									<td width="21%" class="noborderright">미납액</td>
+								</tr>
+								<tr ng-repeat="item in data.unpaidList | limitTo: 15" class="itemcell">
+									<td class="bold graycell" style="letter-spacing:-2px !important;"><span ng-bind="item.year"></span>년 <span ng-if="item.month < 10">0</span><span ng-bind="item.month"></span>월</td>
+									<td><span ng-bind="item.totalFee | number:0"></span></td>
+									<td><span ng-bind="item.amountPay | number:0"></span></td>
+									<td><span ng-bind="item.payDate | date:'yyyy.MM.dd'"></span></td>
+									<td class="noborderright"><span ng-bind="item.amountNoPay | number:0"></span></td>
+								</tr>
+							</table>
+							<!-- end 미납 내역 table -->
+
+							<br/>
+							<!-- 추가 금액 table -->
+							<div class="bold paddingSmallLeft">
+								+ 추가 금액 내역
+							</div>
+							<table class="fullbox table-content lsSmall">
+								<tr class="bold itemcell" ng-repeat="item in data.unpaidAddedList">
+									<td class="textLeft paddingLeft whitecell noborderright" width="50%"><span ng-bind="item.title"></span></td>
+									<td class="textRight paddingRight whitecell noborderright" width="50%"><span ng-bind="item.amount | number:0"></span>원</td>
+								</tr>
+							</table>
+							<!-- end 추가 금액 table -->
+
+							<br/>
+							<!-- 기타 사유 table -->
+							<div class="bold paddingSmallLeft">
+								+ 기타사유 
+							</div>
+						</div>
+						<div class="fullbox graybox padding5 layout-content-full">
+						   <span ng-bind="data.unpaidComment"></span>
+						</div>
+					</div>
+					<!-- end 기타 사유 table -->
+
+				</td>
+				<!-- end second column -->
+
+				<!-- third column -->
+				<td width="37%" height="18cm">
+
+					<div class="layout">
+						<div class="layout-fixed">
+							<div class="titlebox">상세명세2 / 시설관리비</div>
+
+							<!-- 총 금액 table -->
+							<div class="bold paddingSmallLeft">
+								+ 총 금액
+							</div>
+							<table class="fullbox table-content">
+								<colgroup>
+									<col width="50%"/>
+									<col width="50%"/>
+								</colgroup>
+								<tr>
+									<td class="bold paddingSmallLeft">총 금액</td>
+									<td class="bold textRight paddingRight">
+										<span ng-bind="data.fee | number:0"></span>원
+									</td>
+								</tr>
+								<tr ng-repeat="item in data.feeGroupList">
+									<td class="bold paddingLeft">
+										<span ng-bind="item.title"></span>
+									</td>
+									<td class="textRight paddingRight">
+										<span ng-bind="item.amount | number:0"></span>원
+									</td>
+								</tr>
+							</table>
+							<!-- end 총 금액 table -->
+
+							<br/>
+							<!-- 시설 관리비 발생 내역 table -->
+							<div class="bold paddingSmallLeft">
+								+ 시설 관리비 발생 내역
+							</div>
+							<!-- end 추가 금액 table -->
+							<table class="fullbox table-content">
+								<colgroup>
+									<col width="50%"/>
+									<col width="50%"/>
+								</colgroup>
+								<tr ng-repeat="item in data.feeList | limitTo: 10" class="itemcell">
+									<td class="bold paddingLeft whitecell noborderright">
+										<span ng-bind="item.title"></span>
+									</td>
+									<td class="textRight whitecell noborderright" style="padding-right:5px">
+										<span ng-if="!item.nodata"><span ng-bind="item.amount | number:0"></span>원</span>&nbsp;
+									</td>
+								</tr>
+							</table>
+
+							<br/>
+							<!-- 기타 사유 table -->
+							<div class="bold paddingSmallLeft">
+								+ 기타 사유
+							</div>
+						</div>
+						<div class="layout-content fullbox graybox padding5">
+							   <span ng-bind="data.unpaidComment"></span>
+						</div>
+						<div class="layout-fixed">
+							<!-- end 기타 사유 table -->
+							
+							<!-- contact -->
+							<br />
+							<br />
+							<br />
+							<div>
+								문의 사항은 하단의 관련부서로 연락 주시기 바랍니다.
+							<div>
+							<table class="contactbox fullbox textCenter nopadding" style="font-size:7pt !important">
+								<colgroup>
+									<col width="12%" class="graycell"/>
+									<col width="17%"/>
+									<col width="27%"/>
+									<col width="17%"/>
+									<col width="27%"/>
+								</colgroup>
+								<tr class="borderBlackTop">
+									<td class="graycell">주소</td>
+									<td class="noborderright" colspan="4"><span ng-bind="building.address"></td>
+								</tr>
+								<tr>
+									<td class="graycell" rowspan="3">연락처</td>
+									<td class="graycell"><span ng-bind="data.contact.infoList[0].title"></span>&nbsp;</td>
+									<td><span ng-bind="building.manager"></span</td>
+									<td class="graycell"><span ng-bind="data.contact.infoList[1].title"></span></td>
+									<td class="noborderright lsSmall"><span ng-bind="building.managerNumber"></span</td>
+								</tr>
+								<tr>
+									<td class="graycell"><span ng-bind="data.contact.infoList[2].title"></span>&nbsp;</td>
+									<td><span class=" lsSmall" ng-bind="building.leaseNumber"></span</td>
+									<td class="graycell"><span ng-bind="data.contact.infoList[3].title"></span></td>
+									<td class="noborderright lsSmall"><span ng-bind="building.guardNumber"></span</td>
+								</tr>
+								<tr>
+									<td class="graycell"><span ng-bind="data.contact.infoList[4].title"></span>&nbsp;</td>
+									<td><span class=" lsSmall" ng-bind="building.facilityNumber"></span</td>
+									<td class="graycell"><span ng-bind="data.contact.infoList[5].title"></span></td>
+									<td class="noborderright lsSmall"><span ng-bind="building.mainNumber"></span</td>
+								</tr>
+								<tr>
+									<td class="graycell">팩스</td>
+									<td class="graycell"><span ng-bind="data.contact.infoList[6].title"></span>&nbsp;</td>
+									<td><span class=" lsSmall" ng-bind="building.leaseFax"></span</td>
+									<td class="graycell"><span ng-bind="data.contact.infoList[7].title"></span></td>
+									<td class="noborderright lsSmall"><span ng-bind="building.mainFax"></span</td>
+								</tr>
+								<tr>
+									<td class="graycell">E-mail</td>
+									<td colspan="4" class="noborderright"><span ng-bind="building.email"></span></td>
+								</tr>
+								<tr>
+									<td class="graycell">번호</td>
+									<td colspan="4" class="noborderright"><span ng-bind="data.contact.doc.num"></span></td>
+								</tr>
+								<tr>
+									<td class="graycell">제목</td>
+									<td colspan="4" class="noborderright"><span ng-bind="data.contact.doc.title"></span></td>
+								</tr>
+								<tr class="borderBlackBottom">
+									<td class="graycell">일자</td>
+									<td colspan="4" class="noborderright"><span ng-bind="data.contact.doc.written | date:'yyyy.MM.dd'"></span></td>
+								</tr>
+							</table>
+							<br />
+							<div class="textRight sign">
+								<span ng-bind="data.contact.name"></span>
+							</div>
+							<!-- end: contact -->
+						</div>
+					</div>
+				</td>
+				<!-- end third column -->
+            </tr>
+		</table>
+	</div>
+	
+
+
+
+
+	<!-- start: JavaScript-->
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/sparkline.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/tiny-scrollbar.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/moment.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/daterangepicker.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom-index.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/datepicker/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.datepicker-ko.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+
+	<script src="{{ STATIC_URL }}ejs/ejs.js"></script>
+	<script src="{{ STATIC_URL }}ejs/ejs_production.js"></script>
+	<script src="{{ STATIC_URL }}ejs/view.js"></script>
+
+	<script src="{{ STATIC_URL }}js/common.js"></script>
+			
+	<script type="text/javascript" language="JavaScript">
+		$(document).ready(function(){
+			// show sidebar
+		
+			// radio 버튼 클릭 시
+			$('input[name=radioN]').change(function() {
+				changeRadio(Number($(this).val()));
+			});
+		});			
+	</script>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

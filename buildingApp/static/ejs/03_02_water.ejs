@@ -1,0 +1,42 @@
+<% var w = new Array(5,5,6,6,6,6,6,6,6,6,6,6,6,6,6,6,6); %>
+<table class="table table-bordered table-condensed no-margin" style="margin-bottom:0px">
+	<tr>
+		<th style="text-align:center">층</th>
+		<th style="text-align:center">호수</th>
+		<th style="text-align:center">입주자</th>
+		<th style="text-align:center">입주일</th>
+		<th style="text-align:center">입주검침</th>
+		<th style="text-align:center">사용기간</th>
+		<th style="text-align:center">전월검침</th>
+		<th style="text-align:center">당월검침</th>
+		<th style="text-align:center">전월사용량</th>
+		<th style="text-align:center">당월사용량</th>
+		<th style="text-align:center">기본요금</th>
+		<th style="text-align:center">상수도요금</th>
+		<th style="text-align:center">하수도요금</th>
+		<th style="text-align:center">물이용부담금</th>
+		<th style="text-align:center">절사금액</th>
+		<th style="text-align:center">합계금액</th>
+	</tr>
+	<% for (i = 0; i < data.length; i++) { %>
+	<% if (floor != '' && data[i].floor != floor) { continue; } %>
+	<tr>
+		<td style="text-align:center"><%= data[i].floor %></td>
+		<td style="text-align:center"><%= data[i].roomnum %></td>
+		<td style="text-align:center"><%= data[i].name %></td>
+		<td style="text-align:center"><%= data[i].date %></td>
+		<td style="text-align:center"><%= data[i].readIn.toLocaleString().replace('.00','') %></td>
+		<td style="text-align:center"><%= data[i].usePeriod.toLocaleString().replace('.00','') %></td>
+		<td style="text-align:center"><%= data[i].readBefore.toLocaleString().replace('.00','') %></td>
+		<td style="text-align:center"><%= data[i].readNow.toLocaleString().replace('.00','') %></td>
+		<td style="text-align:center"><%= data[i].capacityBefore.toLocaleString().replace('.00','') %></td>
+		<td style="text-align:center"><%= data[i].capacityNow.toLocaleString().replace('.00','') %></td>
+		<td style="text-align:center"><%= data[i].basicCharge.toLocaleString().replace('.00','') %></td>
+		<td style="text-align:center"><%= data[i].waterSupplyCharge.toLocaleString().replace('.00','') %></td>
+		<td style="text-align:center"><%= data[i].sewerageCharge.toLocaleString().replace('.00','') %></td>
+		<td style="text-align:center"><%= data[i].waterUseCharge.toLocaleString().replace('.00','') %></td>
+		<td style="text-align:center"><%= data[i].trimmedFee.toLocaleString().replace('.00','') %></td>
+		<td style="text-align:center"><%= data[i].totalFee.toLocaleString().replace('.00','') %></td>
+	</tr>
+	<% } %>
+</table>

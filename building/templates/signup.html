@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<!-- start: Meta -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Yewoo Housing Management System</title>
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: CSS -->
+	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet" media="all">
+	<link type="text/css" href="{{ STATIC_URL }}bootstrap/css/daterange.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}bootstrap/css/main.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}bootstrap/fonts/font-awesome.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet" media="all">
+	<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet" media="all">
+	<link href="{{ STATIC_URL }}css/signup.css" rel="stylesheet">
+	<!-- end: CSS -->
+
+	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	[endif]-->
+
+	<!-- start: Favicon -->
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<!-- end: Favicon -->
+	
+	<style>
+    body {
+      padding-bottom: 40px;
+      font-family : 'Malgun Gothic' !important;
+    }
+    .sidebar-nav {
+      padding: 9px 0;
+    }
+    @media (max-width: 980px) {
+      /* Enable use of floated navbar text */
+      .navbar-text.pull-right {
+        float: none;
+        padding-left: 5px;
+        padding-right: 5px;
+      }
+    }
+	</style>
+		
+</head>
+
+<body>
+    <!-- start:Header --!>
+	<div class="container-fluid" style="margin-top:10px; padding: 0px 20px 0px 20px">
+        <h3><u><font color="blue">Yewoo</font> Housing Management System</u></h3>
+	</div>
+	<div class="container-fluid" style="margin-top:10px; padding: 0px 20px 0px 20px">
+        <h4><strong>시스템 가입 REGISTER</strong></h4>
+	</div>
+	
+	<div class="container-fluid" style="padding: 0px 10px 0px 10px; margin-top:20px; margin-bottom:40px">
+        <div class="col-md-12">
+			<div class="panel panel-default" style="margin:0px; padding:0px">
+				<div class="panel-heading clearfix" style="padding:10px 10px 10px 10px">
+					<h3 class="panel-title">예우 시스템 가입을 신청합니다.</h3>
+				</div>
+			</div>
+			<hr>
+			<div class="panel panel-default center-block" style="margin: 0px; padding: 0px">
+				<div class="panel-heading clearfix">
+					<h3 class="panel-title"><strong>시스템 가입 정보</strong></h3>
+				</div>
+				<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0;">
+					<table class="table table-bordered table-condensed no-margin" style="table-layout:fixed">
+						<colgroup>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="10%"></col>
+						</colgroup>
+						<tbody>
+							<tr>
+								<td colspan="3" class="must title">
+									<span><strong>시스템 아이디</strong></span>
+								</td>
+								<td colspan="3">
+									<input id="systemId" class="margin0 form-control input-sm" type="text" />
+								</td>
+								<td class="align-center" colspan="3">
+									<button type="button" class="btn btn-sm btn-default width4" onclick="checkId();">중복 확인</button>
+								</td>
+								<td colspan="11">
+									<span>* 띄어쓰기 없이 영/숫자 6~10자</span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3" class="must title">
+									<span><strong>비밀번호</strong></span>
+								</td>
+								<td colspan="3">
+									<input id="systemPass1" class="margin0 form-control input-sm" type="password"/>
+								</td>
+								<td class="align-center" colspan="3">
+									<div class="center-align-text">
+										<button type="button" id="isSafe" class="btn btn-sm btn-danger" disabled>사용불가</button>
+									</div>
+								</td>
+								<td colspan="11">
+									<span>* 비밀번호 도움말 6~15자의 영문 대/소문자, 숫자 및 특수문자 조합 
+</span>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3" class="must title">
+									<span><strong>비밀번호 확인</strong></span>
+								</td>
+								<td colspan="3">
+									<input id="systemPass2" class="margin0 form-control input-sm" type="password"/>
+								</td>
+								<td colspan="3" class="optional title">
+									<span><strong>비밀번호 힌트</strong></span>
+								</td>
+								<td colspan="11">
+									<input id="systemPassHint" class="margin0 form-control input-sm" type="text"/>
+								</td>
+							</tr>
+						</tbody>
+					 </table>  
+				</div>
+			</div>
+			<div class="panel panel-default center-block" style="margin: 20px 0px 0px 0px;  padding: 0px">
+				<div class="panel-heading clearfix">
+					<h3 class="panel-title"><strong>직원 정보</strong></h3>
+				</div>
+				<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0;">
+					<table class="table table-bordered table-condensed no-margin" style="table-layout:fixed">
+						<colgroup>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="10%"></col>
+						</colgroup>
+						<tbody>
+							<tr>
+								<td colspan="3" class="must title">
+									<span><strong>이름</strong></span>
+								</td>
+								<td colspan="3">
+									<input id="signupName" class="margin0 form-control input-sm" type="text"/>
+								</td>
+								<td colspan="3" class="must title">
+									<span><strong>생년월일</strong></span>
+								</td>
+								<td colspan="3">
+									<div class="form-inline">
+										<input id="signupBirthdayYear" class="margin0 form-control input-sm fontmini" style="width:60px; margin:0px 0px 3px 0px" type="text" placeholder="생년"/>
+										<input id="signupBirthdayMonth" class="margin0 form-control input-sm" style="width:36px" type="text" placeholder="월"/>
+										<input id="signupBirthdayDay" class="margin0 form-control input-sm" style="width:36px" type="text" placeholder="일"/>
+									</div>
+								</td>
+								<td colspan="3" class="must title">
+									<span><strong>성별</strong></span>
+								</td>
+								<td colspan="5">
+									<select id="signupGender" class="margin0 form-control input-sm width2" style="margin-right:10px; margin-bottom:0px">
+										<option value="남">남</option>
+										<option value="여">여</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td colspan="3" class="must title">
+									<span><strong>부서</strong></span>
+								</td>
+								<td colspan="3">
+									<select id="signupDepartment" class="margin0 form-control input-sm" style="">
+										{% for department in departments %}
+										<option value="{{ department.name }}">{{ department.name }}</option>
+										{% endfor %}
+									</select>
+								</td>
+								<td colspan="3" class="must title">
+									<span><strong>직급</strong></span>
+								</td>
+								<td colspan="3">
+									<select id="signupPosition" class="margin0 form-control input-sm" style="">
+										{% for position in positions %}
+										<option value="{{ position.name }}">{{ position.name }}</option>
+										{% endfor %}
+									</select>
+								</td>
+								<td colspan="3" class="must title">
+									<span><strong>입사일</strong></span>
+								</td>
+								<td colspan="5">
+									<div class="form-inline">
+										<input id="signupJoinYear" class="margin0 form-control input-sm fontmini" style="width:60px" type="text" placeholder="입사년"/>
+										<input id="signupJoinMonth" class="margin0 form-control input-sm" style="width:36px" type="text" placeholder="월"/>
+										<input id="signupJoinDay" class="margin0 form-control input-sm" style="width:36px" type="text" placeholder="일"/>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					 </table>  
+				</div>
+			</div>
+			<div class="panel panel-default center-block" style="margin: 20px 0px 0px 0px; padding: 0px">
+				<div class="panel-heading clearfix">
+					<h3 class="panel-title"><strong>연락처 및 주소</strong></h3>
+				</div>
+				<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0;">
+					<table class="table table-bordered table-condensed no-margin" style="table-layout:fixed">
+						<colgroup>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="5%"></col>
+							<col width="10%"></col>
+						</colgroup>
+						<tbody>
+							<tr>
+								<td colspan="3" class="must title">
+									<span><strong>연락처1</strong></span>
+								</td>
+								<td colspan="3">
+									<input id="signupContact1" class="margin0 form-control input-sm" type="text"/>
+								</td>
+								<td colspan="3" class="optional title">
+									<span><strong>연락처2</strong></span>
+								</td>
+								<td colspan="3">
+									<input id="signupContact2" class="margin0 form-control input-sm" type="text"/>
+								</td>
+								<td colspan="3" class="must title">
+									<span><strong>주소</strong></span>
+								</td>
+								<td colspan="5">
+									<input id="signupAddress" class="margin0 form-control input-sm" type="text"/>
+								</td>
+							</tr>
+						</tbody>
+					 </table>  
+				</div>
+			</div>
+
+			<div class="center-wrapper" style="margin-top:20px">
+				<button type="button" align="center" class="btn btn-sm btn-primary" onclick="SignUp();">가입을 신청합니다</button>
+			</div>
+		</div>
+    </div>
+
+
+
+	<!-- start: JavaScript-->
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/sparkline.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/tiny-scrollbar.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/moment.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/daterangepicker.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom-index.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/datepicker/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.datepicker-ko.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+
+	<script src="{{ STATIC_URL }}ejs/ejs.js"></script>
+	<script src="{{ STATIC_URL }}ejs/ejs_production.js"></script>
+	<script src="{{ STATIC_URL }}ejs/view.js"></script>
+	<script src="{{ STATIC_URL }}/js/common.js"></script>
+	<script src="{{ STATIC_URL }}/js/signup.js"></script>
+
+	<script type="text/javascript" language="JavaScript">
+		$(document).ready(function(){
+			$('#systemPass1').change(function() {
+				$('#isSafe').removeClass("btn-danger");
+				$('#isSafe').removeClass("btn-warning");
+				$('#isSafe').removeClass("btn-success");
+				var pass = $(this).val()
+				var length = pass.length;
+				if(/(?=.{10})/.test(pass) && /.*\d.*/.test(pass) && /.*[a-z].*/.test(pass) && /.*[A-Z].*/.test(pass) && /.*[^0-9a-zA-z].*/.test(pass)) {
+				//숫자/영소/영대/특문 모두 포함하고 길이 10 이상이면 안전
+					$('#isSafe').text("안전");
+					$('#isSafe').addClass("btn-success");
+				} else if(/(?=.{9})/.test(pass) && /.*\d.*/.test(pass) && /.*[a-z].*/.test(pass) && /.*[A-Z].*/.test(pass)) {
+					$('#isSafe').text("적정");
+					$('#isSafe').addClass("btn-warning");
+				} else if(/(?=.{6})/.test(pass)) {
+					$('#isSafe').text("낮음");
+					$('#isSafe').addClass("btn-warning");
+				} else {
+					$('#isSafe').text("사용불가");
+					$('#isSafe').addClass("btn-danger");
+				}
+			});
+		});			
+	</script>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>

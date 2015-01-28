@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+	<!-- start: Meta -->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<title>Yewoo Housing Management System</title>
+	<!-- end: Meta -->
+	
+	<!-- start: Mobile Specific -->
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- end: Mobile Specific -->
+
+	<!-- start: CSS -->
+	<link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet" media="screen">
+	<link type="text/css" href="{{ STATIC_URL }}bootstrap/css/daterange.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}bootstrap/css/main.css" rel="stylesheet" media="screen">
+	<link href="{{ STATIC_URL }}bootstrap/fonts/font-awesome.css" rel="stylesheet">
+	<link href="{{ STATIC_URL }}css/common.css" rel="stylesheet">
+	<link href="http://code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css" rel="stylesheet">
+	<!-- end: CSS -->
+
+	<!-- The HTML5 shim, for IE6-8 support of HTML5 elements -->
+	<!--[if lt IE 9]
+	  <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	[endif]-->
+
+	<!-- start: Favicon -->
+	<link rel="shortcut icon" href="img/favicon.ico">
+	<!-- end: Favicon -->
+	
+	<style>
+    table {
+    	table-layout: fixed;
+    }
+    table th, table td {
+    	overflow: hidden;
+    }
+    .must {
+    	color: red;
+    	float: left;
+		margin-right: 10px;
+    }
+    .optional {
+    	color: black;
+    	float: left;
+    	margin-right: 10px;
+    }
+    .margin0 {
+    	margin-left: 0px !important;
+    	margin-right: 0px !important;
+    	margin-top: 0px !important;
+    	margin-bottom: 0px !important;
+	}
+	.width4 {
+		width: 95px;
+	}
+	.width3 {
+		width: 80px;
+	}
+	.width2 {
+		width: 70px;
+	}
+	select {
+		font-family : 'Malgun Gothic' !important;
+	}
+    body {
+		font-family : 'Malgun Gothic' !important;
+	}
+	input {
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-webkit-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	::-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-moz-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-ms-input-placeholder {
+		font-size : 0.8em !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	:-input {
+		margin-bottom:0px !important;
+		font-family : 'Malgun Gothic' !important;
+	}
+	#myModal {
+		top : 10%;
+		width : 70%;
+		margin : 0px 0px 0px 0px;
+		padding : 0px 0px 0px 0px;
+		left : 10%;
+	}
+	.modal-dialog {
+		width : auto;
+		margin: 0px 0px 0px 0px;
+	}
+	.modal-body {
+		max-height: 100%;
+		height: 80%;
+	}
+	.modal.fade.ui-draggable-dragging {
+		-moz-transition:none;
+		-o-transition:none;
+		-webkit-transition:none;
+		transition:none;
+	}
+	.modal-backdrop {
+		background : none;
+	}
+	.tooltip-inner {
+		text-align:left !important;
+		max-width:500px;
+	}
+	#side-datepicker .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker2 .ui-datepicker {
+		width:auto;
+	}
+	#side-datepicker3 .ui-datepicker {
+		width:auto;
+	}
+	</style>
+		
+</head>
+
+<body>
+    <!-- start:Header --!>
+    {% include "header.html" with menu="resident" %}
+    <!-- end:Header --!>
+	
+    <div class="container-fluid" style="padding: 0px 20px 0px 20px; margin-top:10px; margin-bottom:40px">
+		<div class="col-md-2" style="padding-left:0px">
+          {% include "sidebar.html" with side_menu="department" %}
+        </div>
+			
+		<!-- start: Content -->	
+		<div id="content" class="col-md-10" style="padding-right:0px; font-size:1.1em">
+
+			<div class="row-fluid" style="margin-bottom:0px">
+				<div class="panel panel-grey col-md-12" style="margin: 0px; padding: 0px">
+					<div class="panel-heading clearfix">
+						<h3 class="panel-title"><strong>입주자 관리 시스템</strong></h3>
+					</div>
+					<div class="panel-body" style="padding:0px">
+						<div class="btn-group" data-toggle="buttons">
+							<label class="btn btn-primary active">
+								<input type="checkbox" onclick="movePage('2');">입주자 정보 입력(파일)
+							</label>
+							<label class="btn btn-primary">
+								<input type="checkbox" onclick="movePage('1');">입주자 정보 입력(개별)
+							</label>
+							<label class="btn btn-primary">
+								<input type="checkbox" onclick="movePage('3');">입주자 정보 확인(목록)으로 돌아가기
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- breadcrumb -->
+			<div class="col-md-12" style="padding:0px; margin:10px 0px 10px 0px">
+				<ol class="breadcrumb no-margin">
+					<li><a href="#">입주자 관리</a><!--<span class="divider">></span>--></li>
+					<li class="active">입주자 정보 입력 (파일)</li>
+				</ol>
+			</div>
+				
+				<!-- 1.입주자 정보 불러오기 (파일 업로드)-->
+				<div class="row-fluid">
+					<div class="panel panel-default col-md-12" style="margin:0px 0px 5px 0px; padding: 0px">
+						<div class="panel-heading clearfix">
+							<h3 class="panel-title"><strong>1. 입주자 정보 불러오기</strong></h3>
+						</div>
+						<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+							<table class="table table-bordered table-condensed no-margin" style="margin-bottom:0px">
+								<tr>
+									<td>
+										<div class="form-inline">
+											<input id="residentFileInput" type="file" name="file" style="display:none" />
+											<input id="filename" type="text" class="form-control input-sm margin0" style="width:60%" placeholder="파일명" disabled />
+											<input id="file_id" type="hidden" value="{{ excel_id }}" />
+											<button type="button" class="btn btn-sm btn-primary" onclick="$('input[id=residentFileInput]').click();">찾아보기</button>
+											<button type="button" class="btn btn-sm btn-success" onclick="LoadExcelFile();">불러오기</button>
+											<button type="button" class="btn btn-sm btn-danger" style="float:right" id="alertT" title="" data-toggle="tooltip" data-placement="left" onclick="ShowTooltip();">주의사항</button></a>
+										</div>
+									</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+
+				<!-- 2.입주자 정보 저장하기 -->
+				<div class="row-fluid">
+					<div class="panel panel-default col-md-12" style="margin: 0px; padding: 0px">
+						<div class="panel-heading clearfix">
+							<h3 class="panel-title"><strong>2. 입주자 정보 저장하기</strong></h3>
+						</div>
+						<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0; background-color:#edf5fa">
+							<div class="result_sentence">
+								불러온 입주자 정보 <font style="color:red">0</font>건 (신규 입주자 정보 <font style="color:red">0</font>건 / 중복 정보 <font style="color:red">0</font>건) 중 저장 가능한 입주자 정보는 <font style="color:red">0</font>건 입니다. <span><button type="button" class="btn btn-sm btn-primary" style="margin-left:20px" disabled>저장하기</button></span>
+							</div>
+						</div>
+						<div id="div_label" class="span12" style="margin:5px 0px 0px 0px; padding:0px; display:none">
+							<span id="label0" class="label" onclick="filter('0');">전체선택</span>
+							<span id="label1" class="label" onclick="filter('1');">중복 정보 제거</span>
+							<span id="label2" class="label" onclick="filter('2');">중복 정보 포함</span>
+						</div>
+						<div id="file_content" class="panel-body table-responsive" style="margin: 0px; padding: 0px; border:0">
+							<div style="float:center">파일 [찾아보기]를 통해 입주자 정보를 추가해 주세요.</div>
+						</div>
+						<div class="panel-body" style="margin: 0px; padding: 0px; border:0; background-color:#edf5fa">
+							<div class="result_sentence">
+								불러온 입주자 정보 <font style="color:red">0</font>건 (신규 입주자 정보 <font style="color:red">0</font>건 / 중복 정보 <font style="color:red">0</font>건) 중 저장 가능한 입주자 정보는 <font style="color:red">0</font>건 입니다. <span><button type="button" class="btn btn-sm btn-primary" style="margin-left:20px" disabled>저장하기</button></span>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<!-- end: Content -->
+		</div>
+	</div>
+	
+	
+	<input type="hidden" value="{{ csrf_token }}" />	
+	<!-- 미리보기 -->
+	<div class="modal fade dragModal" id="myModal" aria-labelledby="myModalTitle" role="dialog" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">X</button>
+					<h4 class="modal-title" id="myModalTitle">입력 정보 미리보기</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin:0px; padding: 0px">
+							<div class="panel-heading clearfix" style="margin: 0px 0px 0px 0px; padding-top: 0px">
+								<h3 class="panel-title"><strong>1. 임대 정보 입력</strong></h3>
+							</div>
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border: 0; background-color:#f8f8f8">
+								<table class="table table-bordered table-condensed no-margin">
+									<colgroup>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+									</colgroup>
+									<tbody>
+											<tr>
+												<td colspan="5">
+													<div class="must" style="margin-right:26px"><strong>건물명</strong></div>
+													<div id="buildingName_modal" class="margin0"></div>
+												</td>
+												<td colspan="4">
+													<div class="must" style="margin-right:20px"><strong>관리자</strong></div>
+													<div id="manager_modal" class="margin0"></div>
+												</td>
+												<td colspan="3">
+													<div class="must"><strong>호    실</strong></div>
+													<div id="buildingRoomNumber_modal" class="margin0"></div>
+												</td>
+												<td colspan="4">
+													<div class="must" style="margin-right:20px"><strong>관리비</strong></div>
+													<div id="maintenanceFee_modal" class="margin0"></div>
+												</td>
+												<td colspan="4">
+													<div class="must" style="margin-right:20px"><strong>부가세</strong></div>
+													<div id="surtax_modal" class="margin0"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="4">
+													<div class="must"><strong>입주자</strong></div>
+													<div id="residentName_modal" class="margin0"></div>
+												</td>
+												<td colspan="3">
+													<div class="must"><strong>입주회차</strong></div>
+													<div id="leaseNumber_modal" class="margin0">
+												</td>
+												<td colspan="5">
+													<div class="must"><strong>입주기간</strong></div>
+													<div id="leaseContractPeriod_modal" class="margin0"></div>
+												</td>
+												<td colspan="8">
+													<div class="must" style="margin-right:26px"><strong>입주일</strong></div>
+													<div id="inOutDate_modal" class="margin0"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="4"> 
+													<div class="must"><strong>임대 구분</strong></div>
+													<div id="leaseType_modal" class="margin0"></div>
+												</td>
+												<td colspan="8">
+													<div class="must"><strong>보증금</strong></div>
+													<div id="leaseDeposit_modal" class="margin0"></div>
+												</td>
+												<td colspan="8">
+													<div class="must" style="margin-right:26px"><strong>임대료</strong></div>
+													<div id="leasePay_modal" class="margin0"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="10">
+													<div class="must"><strong>입주 검침</strong></div>
+													<div id="checkType_modal" class="margin0" style="float:left; margin-right:10px"></div>
+													<div id="checkEHWHW_modal" class="margin0" style="float:left; margin-left:10px"></div>
+													<div id="checkEGW_modal" class="margin0" style="float:left"></div>
+												</td>
+												<td colspan="4">
+													<div id="readDate_modal" class="margin0"></div>
+												</td>
+												<td colspan="6">
+													<div id="readContent_modal" class="margin0"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="20">
+													<div class="must" width="10%"><strong>중개 정보</strong></div>
+													<div id="agency_modal" class="margin0"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2">
+													<div class="must">재실 정보</div>
+												</td>
+												<td colspan="2">
+													<div class="must">입실</div>
+												</td>
+												<td colspan="3">
+													<div id="checkIn_modal"></div>
+												</td>
+												<td colspan="4">
+													<div id="realInDate_modal" class="margin0"></div>
+												</td>
+												<td colspan="2">
+													<div class="must">퇴실</div>
+												</td>
+												<td colspan="3">
+													<div id="checkOut_modal"></div>
+												</td>
+												<td colspan="4">
+													<div id="realOutDate_modal" class="margin0"></div>
+												</td>
+											</tr>
+											<tr>
+												<td colspan="2">
+													<div class="optional">퇴실 사유</div>
+												</td>
+												<td colspan="18">
+													<div id="outReason_modal" class="margin0"></div>
+												</td>
+											</tr>
+									</tbody>
+								 </table>  
+							</div>
+						</div>
+					</div>
+					
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin:0px; padding: 0px">
+							<div class="panel-heading clearfix" style="margin: 0px 0px 0px 0px; padding-top: 0px">
+								<h3 class="panel-title"><strong>2. 임대 계약자</strong></h3>
+							</div>
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border: 0; background-color:#f8f8f8">
+								<table class="table table-bordered table-condensed no-margin">
+									<colgroup>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+									</colgroup>
+									<tbody>
+										<tr>
+											<td colspan="10">
+												<div class="must" style="margin-right:33px"><strong>성명</strong></div>
+												<div id="contractorNameGender_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="must"><strong>주민등록번호</strong></div>
+												<div id="contractorRegNumber_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="10">
+												<div class="must"><strong>연락처 1</strong></div>
+												<div id="contractorContactNumber1_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="optional" style="margin-right:38px"><strong>연락처 2</strong></div>
+												<div id="contractorContactNumber2_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="20">
+												<div class="must" style="margin-right:29px"><strong>주 소</strong></div>
+												<div id="contractorAddress_modal" class="margin0"></div>
+											</td>
+										</tr>
+									</tbody>
+								 </table>  
+							</div>
+						</div>
+					</div>
+					
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin:0px; padding: 0px">
+							<div class="panel-heading clearfix" style="margin: 0px 0px 0px 0px; padding-top: 0px">
+								<h3 class="panel-title"><strong>3. 실 거주자</strong></h3>
+							</div>
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border: 0; background-color:#f8f8f8">
+								<table class="table table-bordered table-condensed no-margin">
+									<colgroup>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+									</colgroup>
+									<tbody>
+										<tr>
+											<td colspan="10">
+												<div class="must" style="margin-right:65px"><strong>성명</strong></div>
+												<div id="residentNameGender_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="must"><strong>주민등록번호</strong></div>
+												<div id="residentRegNumber_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="5">
+												<div class="must"><strong>계약자와 관계</strong></div>
+												<div id="relToContractor_modal" class="margin0"></div>
+											</td>
+											<td colspan="5">
+												<div class="must"><strong>실 거주자 수</strong></div>
+												<div id="residentPeopleNumber_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="must" style="margin-right:60px"><strong>주소</strong></div>
+												<div id="residentAddress_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="10">
+												<div class="must" style="margin-right:42px"><strong>연락처 1</strong></div>
+												<div id="residentContactNumber1_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="optional" style="margin-right:37px"><strong>연락처 2</strong></div>
+												<div id="residentContactNumber2_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="10">
+												<div class="optional" style="margin-right:51px"><strong>직장명</strong></div>
+												<div id="residentOfficeName_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="optional" style="margin-right:55px"><strong>직 급</strong></div>
+												<div id="residentOfficeLevel_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="20">
+												<div class="optional" style="margin-right:37px"><strong>직장주소</strong></div>
+												<div id="residentOfficeAddress_modal" class="margin0"></div>
+											</td>
+										</tr>									
+										<tr>
+											<td colspan="10">
+												<div class="optional" style="margin-right:24px"><strong>직장연락처</strong></div>
+												<div id="residentOfficeContactNumber_modal" class="margin0"></div>
+											</td>
+											<td colspan="10">
+												<div class="must" style="margin-right:47px"><strong>E-mail</strong></div>
+												<div id="residentEmail_modal" class="margin0"></div>
+											</td>
+										</tr>
+										<tr>
+											<td colspan="20">
+												<div class="must" style="margin-right:33px"><strong>주차 유무</strong></div>
+												<div id="haveCar_modal" class="margin0"></div>
+											</td>
+										</tr>					
+									</tbody>
+								 </table>  
+							</div>
+						</div>
+					</div>
+					
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin:0px; padding: 0px">
+							<div class="panel-heading clearfix" style="margin: 0px 0px 0px 0px; padding-top: 0px">
+								<h3 class="panel-title"><strong>4. 전달 유무</strong></h3>
+							</div>
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border: 0; background-color:#f8f8f8">
+								<table class="table table-bordered table-condensed no-margin">
+									<colgroup>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+										<col width="5%"></col>
+									</colgroup>
+									<tbody>
+										<tr>
+											<td colspan="8">
+												<div class="must"><strong>중요사항 설명서</strong></div>
+												<div id="sendMsg_modal" class="margin0"></div>
+											</td>
+											<td colspan="12">
+												<div class="must"><strong>품목체크리스트</strong></div>
+												<div id="checkinout_modal" class="margin0"></div>
+											</td>
+										</tr>			
+									</tbody>
+								 </table>  
+							</div>
+						</div>
+					</div>
+					<div class="row-fluid">
+						<div class="panel panel-default col-md-12" style="margin:0px; padding: 0px">
+							<div class="panel-heading clearfix" style="margin: 0px 0px 0px 0px; padding-top: 0px">
+								<h3 class="panel-title"><strong>5. 기타</strong></h3>
+							</div>
+							<div class="panel-body table-responsive" style="margin: 0px; padding: 0px; border: 0; background-color:#f8f8f8">
+								<table class="table table-bordered table-condensed no-margin">
+									<colgroup>
+										<col width="100%"></col>
+									</colgroup>
+									<tbody>
+										<tr>
+											<td>
+												<div id="memo_modal" class="margin0"></div>
+											</td>
+										</tr>			
+									</tbody>
+								 </table>  
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+
+
+	<!-- start: JavaScript-->
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/bootstrap.min.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/sparkline.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/tiny-scrollbar.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/moment.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/daterange/daterangepicker.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/custom-index.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.cookie.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/datepicker/jquery-ui.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.datepicker-ko.js"></script>
+	<script src="{{ STATIC_URL }}bootstrap/js/jquery.uploadify-3.1.min.js"></script>
+
+	<script src="{{ STATIC_URL }}ejs/ejs.js"></script>
+	<script src="{{ STATIC_URL }}ejs/ejs_production.js"></script>
+	<script src="{{ STATIC_URL }}ejs/view.js"></script>
+
+	<!-- 엑셀파일 관련함수 이름중복으로 인해 순서가 중요함. 두개 순서 바꾸지 말 것. -->
+	<script src="{{ STATIC_URL }}js/common.js"></script>
+	<script src="{{ STATIC_URL }}js/02_03_resident_infoFile.js"></script>
+
+	<script src="{{ STATIC_URL }}xls/jszip.js"></script>
+	<script src="{{ STATIC_URL }}xls/xlsx.js"></script>
+	<script src="{{ STATIC_URL }}xls/xls.js"></script>
+	<script src="{{ STATIC_URL }}xls/shim.js"></script>
+	<script src="{{ STATIC_URL }}xls/xlsx_func.js"></script>
+	<script src="{{ STATIC_URL }}xls/xls_func.js"></script>
+	
+	<script type="text/javascript" language="JavaScript">
+		$(document).ready(function(){
+			// show sidebar
+			$("#side-datepicker").datepicker();
+			$("#side-datepicker2").datepicker();
+			$("#side-datepicker3").datepicker();
+			$('.datepicker').datepicker();
+			$('.datepicker').click(function() {
+				$(this).datepicker();
+			});
+
+			// 팝업창을 움직일 수 있게 함
+			$('.dragModal').draggable({
+				handle : ".modal-content"
+			});
+
+			Alert();
+		});			
+	</script>
+	<!-- end: JavaScript-->
+	
+</body>
+</html>
